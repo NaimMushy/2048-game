@@ -1,11 +1,18 @@
 #ifndef WKW_H
 # define WKW_H
 
+# define TOO_SMALL_MSG "GAME WINDOW TOO SMALL"
+# define MAX_SIZE 10
+# define FILENAME "srcs/letters/letter_0.txt"
+# define FILENAME_LEN 25
+# define LETTER_FILENAME 20
+# define LETTER_WIDTH 6
+# define LETTER_HEIGHT 5
+
 # include <stdbool.h>
 # include <ncurses.h>
 # include <string.h>
-# include <stdlib.h>
-# include "borders.h"
+# include "get_next_line.h"
 
 enum	e_const
 {
@@ -29,12 +36,14 @@ typedef struct	s_board
 
 typedef struct	s_display
 {
-	int		**board;
+	int		board[MAX_SIZE][MAX_SIZE];
+	int		board_sz;
 	int		width;
 	int		height;
 	int		start_row;
 	int		start_col;
-	int		board_sz;
+	bool	ascii;
+	char	letter_filename[FILENAME_LEN];
 }	t_display;
 
 #endif
