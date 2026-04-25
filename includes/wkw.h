@@ -4,6 +4,8 @@
 # include <stddef.h>
 # include <stdbool.h>
 
+# define MAX_BOARD_SIZE 10
+
 enum	e_const
 {
 	WIN_VALUE = 2048
@@ -19,7 +21,7 @@ enum	e_error
 
 typedef struct	s_board
 {
-	size_t	**tiles;
+	size_t	tiles[MAX_BOARD_SIZE][MAX_BOARD_SIZE];
 	size_t	size;
 	size_t	nb_empty_tiles;
 	size_t	max_score;

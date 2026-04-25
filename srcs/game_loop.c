@@ -6,11 +6,12 @@
 /*   By: cviel <cviel@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 16:49:57 by cviel             #+#    #+#             */
-/*   Updated: 2026/04/25 19:10:23 by cviel            ###   ########.fr       */
+/*   Updated: 2026/04/25 19:27:52 by cviel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ncurses.h>
+#include <stdlib.h>
 #include "wkw.h"
 
 void	process_line(t_board* ptr_board, int* line);
@@ -20,11 +21,8 @@ int		add_tile(t_board* ptr_board);
 
 int	game_loop(t_board* ptr_board, int input)
 {
-	int*	line;
+	int	line[MAX_BOARD_SIZE];
 
-	line = malloc(sizeof(size_t) * ptr_board->size);
-	if (line == NULL)
-		return (ERROR_MALLOC);
 	for (size_t i = 0; i < ptr_board->size; ++i)
 	{
 		get_line(ptr_board, line, input, i);
