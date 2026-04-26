@@ -1,4 +1,5 @@
-#include "../includes/wkw.h"
+#include "wkw.h"
+
 void	display_board(t_display *display);
 
 void	handle_resize(void)
@@ -113,6 +114,56 @@ int	resize_window(t_display *display)
 }
 
 
+void	display_scores(t_display *display)
+{
+	int	msg_length, score_len, score, power, digit, pos;
+
+	if (LINES <= display->height * display->board_sz + 1)
+		return ;
+	score = display->player_score;
+	score_len = intlen(score);
+	msg_length = strlen(SCORE_MSG) + score_len + 3 + strlen(BEST_SCORE_MSG) + intlen(display->best_score);
+	if (COLS < msg_length)
+		return ;
+	pos = (COLS - msg_length) / 2;
+	mvwaddstr(stdscr, 1, pos, SCORE_MSG);
+	pos = pos + strlen(SCORE_MSG);
+	while (score_len)
+	{
+		power = ft_pow(10, score_len);
+		digit = score / power;
+		mvwaddch(stdscr, 1, pos, (char)digit + '0');
+		pos++;
+		score = score - (digit * power);
+		score_len--;
+	}
+	pos = pos + 3;
+	mvwaddstr(stdscr, 1, pos, BEST_SCORE_MSG);
+	pos = pos + strlen(BEST_SCORE_MSG);
+	score = display->best_score;
+	score_len = intlen(display->best_score);
+	while (score_len)
+	{
+		power = ft_pow(10, score_len);
+		digit = score / power;
+		mvwaddch(stdscr, 1, pos, (char)digit + '0');
+		pos++;
+		score = score - (digit * power);
+		score_len--;
+	}
+}
+
+
+void	print_char_with_color(int row, int col, char character, int char_pos)
+{
+	int	color = 8 + char_pos;
+
+	wattron(stdscr, COLOR_PAIR(color));
+	mvwaddch(stdscr, row, col, character);
+	wattroff(stdscr, COLOR_PAIR(color));
+}
+
+
 void	print_ascii_number(int row, int col, t_display *display, int number)
 {
 	int fd;
@@ -123,7 +174,8 @@ void	print_ascii_number(int row, int col, t_display *display, int number)
 	line = get_next_line(fd);
 	while (line)
 	{
-		mvwaddnstr(stdscr, row, col, line, LETTER_WIDTH);
+		for (int char_index = 0; char_index < LETTER_WIDTH; char_index++)
+			print_char_with_color(row, col + char_index, line[char_index], char_index);
 		row++;
 		line = get_next_line(fd);
 	}
@@ -158,7 +210,7 @@ void	print_single_number(int row, int col, t_display *display)
 			nb_col = nb_col + LETTER_WIDTH;
 		}
 		else
-			mvwaddch(stdscr, nb_row, nb_col, (char)digit + '0');
+			print_char_with_color(nb_row, nb_col, (char)digit + '0', digit % 6);
 		nb_col++;
 		number = number - (digit * ft_pow(10, len));
 		len--;
@@ -205,6 +257,7 @@ void	display_board(t_display *display)
 		}
 	}
 	display_numbers(display);
+	display_scores(display);
 }
 
 
@@ -224,51 +277,4 @@ void	change_board(t_display *display, int new_board[MAX_SIZE][MAX_SIZE])
 		for (int j = 0; j < display->board_sz; j++)
 			display->board[i][j] = new_board[i][j];
 	}
-}
-
-
-int	main(void)
-{
-	int		input = 0;
-	t_display	game_display = {0};
-	int	board1[MAX_SIZE][MAX_SIZE] = {{2, 0, 4, 8}, {0, 0, 16, 8}, {16, 0, 32, 64}, {2, 2, 16, 4}};
-	int	board2[MAX_SIZE][MAX_SIZE] = {{2, 8, 4, 128}, {2, 0, 16, 2}, {16, 0, 0, 64}, {2, 64, 16, 4}};
-	int cur_board = 2;
-
-	initscr();
-	cbreak();
-	nodelay(stdscr, TRUE);
-	curs_set(0);
-	keypad(stdscr, TRUE);
-	game_display.board_sz = 4;
-	change_board(&game_display, board1);
-	for (int i = 0; i < FILENAME_LEN; i++)
-		game_display.letter_filename[i] = FILENAME[i];
-	while (!resize_window(&game_display))
-		mvwaddstr(stdscr, (LINES - 1) / 2, (COLS - strlen(TOO_SMALL_MSG)) / 2, TOO_SMALL_MSG);
-	while ((input = wgetch(stdscr)) != 27)
-	{
-		if (input == KEY_RESIZE)
-		{
-			handle_resize();
-			if (!resize_window(&game_display))
-				mvwaddstr(stdscr, (LINES - 1) / 2, (COLS - strlen(TOO_SMALL_MSG)) / 2, TOO_SMALL_MSG);
-		}
-		if (input == 110)
-		{
-			if (cur_board == 1)
-			{
-				change_board(&game_display, board1);
-				cur_board = 2;
-			}
-			else
-			{
-				change_board(&game_display, board2);
-				cur_board = 1;
-			}
-			display_board(&game_display);
-		}
-	}
-	endwin();
-	return (1);
 }

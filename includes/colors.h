@@ -1,5 +1,15 @@
-#ifndef BORDERS_H
-# define BORDERS_H
+#ifndef COLORS_H
+# define COLORS_H
+
+
+# define RRED 8
+# define ORANGE 9
+# define RYELLOW 10
+# define RGREEN 11
+# define RBLUE 12
+# define PURPLE 13
+# define RGB_TO_CURSES(x) ((int)((float)x * 3.90625))
+
 
 enum	e_borders
 {
