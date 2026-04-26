@@ -37,6 +37,7 @@
 # include "colors.h"
 # include "get_next_line.h"
 
+extern bool	g_sig;
 
 enum	e_const
 {
