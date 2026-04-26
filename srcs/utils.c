@@ -67,3 +67,12 @@ int	get_multiple(int divide, int number)
 		count++;
 	return (count);
 }
+
+int	ft_strlen(char const* s)
+{
+	int	i = 0;
+
+	while (s[i] != '\0')
+		++i;
+	return (i);
+}
