@@ -13,7 +13,7 @@
 
 enum	e_const
 {
-	WIN_VALUE = 8
+	WIN_VALUE = 2048
 };
 
 enum	e_error

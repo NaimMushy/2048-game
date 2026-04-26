@@ -1,6 +1,5 @@
 #include "wkw.h"
 
-
 void	choose_letter_type(t_display *display)
 {
 	int	max_len = intlen(get_max_nb(display));
