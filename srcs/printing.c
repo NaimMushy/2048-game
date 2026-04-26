@@ -81,12 +81,12 @@ void	print_ascii_number(int row, int col, t_display *display, int number)
 	int fd;
 	char *line;
 
-	display->letter_filename[LETTER_FILENAME] = (char)number + '0';
-	fd = open(display->letter_filename, O_RDONLY);
+	display->letter.filename[LETTER_FILENAME_POS] = (char)number + '0';
+	fd = open(display->letter.filename, O_RDONLY);
 	line = get_next_line(fd);
 	while (line)
 	{
-		for (int char_index = 0; char_index < LETTER_WIDTH; char_index++)
+		for (int char_index = 0; char_index < display->letter.width; char_index++)
 			print_char_with_color(row, col + char_index, line[char_index], START_COLOR + char_index);
 		row++;
 		line = get_next_line(fd);
@@ -103,10 +103,10 @@ void	print_single_number(int row, int col, t_display *display)
 
 	nb_row = display->start_row + (row * display->height) + 1;
 	nb_col = display->start_col + (col * display->width) + 1;
-	if (display->ascii)
+	if (display->letter.ascii)
 	{
-		nb_row = nb_row + ((display->height - LETTER_HEIGHT) / 2);
-		nb_col = nb_col + ((display->width - (LETTER_WIDTH * len + len - 1)) / 2);
+		nb_row = nb_row + ((display->height - display->letter.height) / 2);
+		nb_col = nb_col + ((display->width - (display->letter.width * len + len - 1)) / 2);
 	}
 	else
 	{
@@ -116,10 +116,10 @@ void	print_single_number(int row, int col, t_display *display)
 	while (len > 0)
 	{
 		digit = number / ft_pow(10, len);
-		if (display->ascii)
+		if (display->letter.ascii)
 		{
 			print_ascii_number(nb_row, nb_col, display, digit);
-			nb_col = nb_col + LETTER_WIDTH;
+			nb_col = nb_col + display->letter.width;
 		}
 		else
 			print_char_with_color(nb_row, nb_col, (char)digit + '0', START_COLOR + (get_multiple(2, display->board.tiles[row][col]) % NB_COLORS));

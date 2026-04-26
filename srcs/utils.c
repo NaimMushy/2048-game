@@ -5,12 +5,13 @@ void	choose_letter_type(t_display *display)
 {
 	int	max_len = intlen(get_max_nb(display));
 
-	if (display->height <= 2 + LETTER_HEIGHT)
-		display->ascii = false;
-	else if (display->width <= 2 + (LETTER_WIDTH * max_len) + (max_len - 1))
-		display->ascii = false;
+	if (display->height <= 2 + display->letter.height)
+		display->letter.ascii = false;
+	else if (display->width <= 2 + (display->letter.width * max_len) + (max_len - 1))
+		display->letter.ascii = false;
 	else
-		display->ascii = true;
+		display->letter.ascii = true;
+	display->letter.score = true;
 }
 
 

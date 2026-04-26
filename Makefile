@@ -16,6 +16,7 @@ OBJ_DIR = .build/
 
 C_FILES = $(SCR_DIR)main.c \
 		  $(SCR_DIR)display.c \
+		  $(SCR_DIR)printing.c \
 		  $(SCR_DIR)resize.c \
 		  $(SCR_DIR)utils.c \
 		  $(SCR_DIR)get_next_line.c \

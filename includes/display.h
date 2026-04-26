@@ -12,7 +12,7 @@
 # define STARTOVER_MSG "> start over"
 # define CONTINUE_MSG "> continue game"
 # define QUITGAME_MSG "> quit game"
-# define FILENAME "srcs/letters/letter_0.txt"
+# define LETTER_FILENAME "srcs/letters/letter_0.txt"
 # define LETTER_FILENAME_POS 20
 # define LETTER_WIDTH 6
 # define LETTER_HEIGHT 5
@@ -50,6 +50,8 @@ typedef struct	s_banner
 {
 	bool	score;
 	bool	ascii;
+	int		width;
+	int		height;
 	char	*filename;
 }	t_banner;
 
@@ -65,7 +67,7 @@ typedef struct	s_display
 	bool		quit;
 	t_banner	menu;
 	t_banner	endgame;
-	t_banner	game;
+	t_banner	letter;
 }	t_display;
 
 
@@ -74,6 +76,7 @@ typedef struct	s_display
 void	init_display(t_display *display);
 
 void	ft_mvwaddstr(WINDOW *win, int x, int y, char *str, int attrs);
+void	choose_letter_type(t_display *display);
 
 void	print_ascii_art(int row, int col, char *filename, int line_len);
 void	print_corner(int row, int col, int cur_row, int cur_col, int board_sz);

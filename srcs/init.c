@@ -13,7 +13,16 @@ void	init_display(t_display *display)
 	noecho();
 	keypad(stdscr, TRUE);
 	nodelay(stdscr, TRUE);
-	display->game.filename = LETTER_FILENAME;
+	display->letter.filename = LETTER_FILENAME;
+	display->letter.width = LETTER_WIDTH;
+	display->letter.height = LETTER_HEIGHT;
+	display->menu.filename = MENU_FILENAME;
+	display->menu.width = 58;
+	display->menu.height = 8;
+	display->endgame.filename = ENDGAME_FILENAME;
+	display->endgame.width = ENDGAME_WIDTH;
+	display->endgame.height = ENDGAME_HEIGHT;
+	display->letter.filename = LETTER_FILENAME;
 	display->state = MENU;
 	display->option_selected = PLAY_OPTION;
 	display->board.size = DEFAULT_SIZE;

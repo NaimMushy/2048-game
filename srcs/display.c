@@ -9,10 +9,10 @@ void	display_endgame(t_display *display)
 	int	row, col, msg_length;
 
 	row = display->start_row;
-	if (display->endgame_ascii_banner)
+	if (display->endgame.ascii)
 	{
-		print_ascii_art(row, display->start_col, ENDGAME_FILENAME, ENDGAME_WIDTH);
-		row += ENDGAME_HEIGHT;
+		print_ascii_art(row, display->start_col, display->endgame.filename, display->endgame.width);
+		row += display->endgame.height + 3;
 	}
 	else
 	{
@@ -20,7 +20,7 @@ void	display_endgame(t_display *display)
 		mvwaddstr(stdscr, row, col, ENDGAME_MSG);
 		row += 2;
 	}
-	if (display->endgame_score)
+	if (display->endgame.score)
 	{
 		msg_length = strlen(SCORE_MSG) + intlen(display->board.player_score);
 		col = display->start_col + (display->width - msg_length) / 2;
@@ -58,12 +58,12 @@ void	display_menu(t_display *display)
 
 	clear();
 	row = display->start_row;
-	if (display->menu_ascii_banner)
+	if (display->menu.ascii)
 	{
-		print_ascii_art(row, display->start_col, MENU_FILENAME, MENU_WIDTH);
-		row += MENU_HEIGHT + 1;
+		print_ascii_art(row, display->start_col, display->menu.filename, display->menu.width);
+		row += display->menu.height + 1;
 	}
-	if (display->menu_score)
+	if (display->menu.score)
 	{
 		msg_length = strlen(BEST_SCORE_MSG) + intlen(display->board.max_score);
 		col = display->start_col + (display->width - msg_length) / 2;

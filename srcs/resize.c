@@ -43,8 +43,8 @@ void	resize_menu(t_display *display)
 	handle_resize();
 	display->height = 3;
 	display->width = 7;
-	display->menu_score = false;
-	display->menu_ascii_banner = false;
+	display->menu.score = false;
+	display->menu.ascii = false;
 	if (LINES < display->height || COLS < display->width)
 	{
 		mvwaddstr(stdscr, (LINES - 1) / 2, (COLS - strlen(TOO_SMALL_MSG)) / 2, TOO_SMALL_MSG);
@@ -52,15 +52,15 @@ void	resize_menu(t_display *display)
 	}
 	if (LINES >= display->height + 2 && COLS >= display->width + (msg_length - display->width))
 	{
-		display->menu_score = true;
+		display->menu.score = true;
 		display->height += 2;
 		display->width += msg_length - display->width;
 	}
-	if (LINES >= display->height + MENU_HEIGHT + 1 && COLS >= display->width + (MENU_WIDTH - display->width))
+	if (LINES >= display->height + display->menu.height + 1 && COLS >= display->width + (display->menu.width - display->width))
 	{
-		display->menu_ascii_banner = true;
-		display->height += MENU_HEIGHT + 1;
-		display->width += MENU_WIDTH - display->width;
+		display->menu.ascii = true;
+		display->height += display->menu.height + 1;
+		display->width += display->menu.width - display->width;
 	}
 	display->start_row = (LINES - display->height) / 2;
 	display->start_col = (COLS - display->width) / 2;
@@ -80,7 +80,8 @@ void	resize_endgame(t_display *display)
 		display->height += 2;
 		display->width += 3;
 	}
-	display->endgame_ascii_banner = false;
+	display->endgame.ascii = false;
+	display->endgame.score = false;
 	if (LINES < display->height || COLS < display->width)
 	{
 		mvwaddstr(stdscr, (LINES - 1) / 2, (COLS - strlen(TOO_SMALL_MSG)) / 2, TOO_SMALL_MSG);
@@ -88,15 +89,15 @@ void	resize_endgame(t_display *display)
 	}
 	if (LINES >= display->height + 2 && COLS >= display->width + (msg_length - display->width))
 	{
-		display->endgame_score = true;
+		display->endgame.score = true;
 		display->height += 2;
 		display->width += msg_length - display->width;
 	}
-	if (LINES >= display->height + ENDGAME_HEIGHT -1 && COLS >= display->width + (ENDGAME_WIDTH) - display->width)
+	if (LINES >= display->height + display->endgame.height + 3 && COLS >= display->width + (display->endgame.width + 3) - display->width)
 	{
-		display->endgame_ascii_banner = true;
-		display->height += ENDGAME_HEIGHT - 1;
-		display->width += ENDGAME_WIDTH - display->width;
+		display->endgame.ascii = true;
+		display->height += display->endgame.height + 3;
+		display->width += display->endgame.width + 3 - display->width;
 	}
 	display->start_row = (LINES - display->height) / 2;
 	display->start_col = (COLS - display->width) / 2;
