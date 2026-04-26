@@ -42,7 +42,7 @@ void	save_score(int score)
 	int fd = open(SCORE_FILENAME, O_WRONLY | O_TRUNC | O_CREAT, S_IRWXU);
 	char	buf;
 
-	if (fd <= 2)
+	if (fd <= 2 || score == 0)
 		return ;
 	while (len > 0)
 	{
