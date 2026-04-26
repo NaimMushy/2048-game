@@ -29,7 +29,7 @@
 
 enum	e_const
 {
-	WIN_VALUE = 2048
+	WIN_VALUE = 6
 };
 
 enum	e_states
@@ -42,9 +42,15 @@ enum	e_states
 enum	e_error
 {
 	SUCCESS = 0,
-	ERROR_MALLOC = 1,
-	ERROR_NCURSES = 2,
-	ERROR_GAME = 3
+	ERROR_NCURSES = 1,
+	ERROR_GAME = 2
+};
+
+enum e_game_status
+{
+	RUNNING = 0,
+	WIN = 1,
+	GAME_OVER = 2,
 };
 
 typedef struct	s_board
@@ -54,7 +60,8 @@ typedef struct	s_board
 	int	nb_empty_tiles;
 	int	max_score;
 	int	player_score;
-	bool	is_over;
+	int	game_status;
+	int	win_value;
 }	t_board;
 
 typedef struct	s_display

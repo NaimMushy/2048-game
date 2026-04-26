@@ -6,7 +6,7 @@
 /*   By: cviel <cviel@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 16:49:57 by cviel             #+#    #+#             */
-/*   Updated: 2026/04/26 17:01:37 by cviel            ###   ########.fr       */
+/*   Updated: 2026/04/26 17:47:34 by cviel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,16 @@ bool	process_line(t_board* ptr_board, int* line);
 void	get_line(t_board* ptr_board, int* line, int input, int index);
 void	set_line(t_board* ptr_board, int* line, int input, int index);
 int		add_tile(t_board* ptr_board);
+void	check_win_status(t_board* ptr_board);
+void	check_game_over(t_board* ptr_board);
 
 int	game_loop(t_board* ptr_board, int input)
 {
 	int		line[MAX_BOARD_SIZE];
 	bool	input_valid = false;
 
+	check_win_status(ptr_board);
+	check_game_over(ptr_board);
 	for (int i = 0; i < ptr_board->size; ++i)
 	{
 		get_line(ptr_board, line, input, i);
@@ -33,8 +37,8 @@ int	game_loop(t_board* ptr_board, int input)
 			set_line(ptr_board, line, input, i);
 		}
 	}
-	if (input_valid == true)
-		return (add_tile(ptr_board));
+	if (input_valid == true && add_tile(ptr_board) != SUCCESS)
+		return (ERROR_GAME);
 	return (SUCCESS);
 }
 
@@ -55,6 +59,8 @@ bool	process_line(t_board* ptr_board, int* line)
 					{
 						line[i] <<= 1;
 						ptr_board->player_score += line[i];
+						if (ptr_board->player_score > ptr_board->max_score)
+							ptr_board->max_score = ptr_board->player_score;
 						line[j] = 0;
 						++ptr_board->nb_empty_tiles;
 						change = true;
@@ -147,5 +153,35 @@ void	set_line(t_board* ptr_board, int* line, int input, int index)
 			}
 		}
 		ptr_board->tiles[row][col] = line[i];
+	}
+}
+
+void	check_win_status(t_board* ptr_board)
+{
+	for (int i = 0; i < ptr_board->size; ++i)
+	{
+		for (int j = 0; j < ptr_board->size; ++j)
+		{
+			if (ptr_board->tiles[i][j] == WIN_VALUE)
+				ptr_board->game_status = WIN;
+		}
+	}
+}
+
+void	check_game_over(t_board* ptr_board)
+{
+	if (ptr_board->nb_empty_tiles == 0)
+	{
+		for (int i = 0; i < ptr_board->size; ++i)
+		{
+			for (int j = 0; j < ptr_board->size; ++j)
+			{
+				if (i + 1 < ptr_board->size && ptr_board->tiles[i][j] == ptr_board->tiles[i + 1][j])
+					return ;
+				if (j + 1 < ptr_board->size && ptr_board->tiles[i][j] == ptr_board->tiles[i][j + 1])
+					return ;
+			}
+		}
+		ptr_board->game_status = GAME_OVER;
 	}
 }
