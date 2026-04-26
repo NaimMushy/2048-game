@@ -17,6 +17,9 @@ OBJ_DIR = .build/
 C_FILES = $(SCR_DIR)testmain.c \
 		  $(SCR_DIR)display.c \
 		  $(SCR_DIR)get_next_line.c \
+		  $(SCR_DIR)game_init.c \
+		  $(SCR_DIR)game_loop.c \
+		  $(SCR_DIR)tile_gen.c \
 		  $(SCR_DIR)init.c
 
 HEADERS = $(INCLUDE_DIR)wkw.h \

@@ -1,6 +1,6 @@
 #include "wkw.h"
 
-void	init_display(void)
+void	init_display(t_display *display)
 {
 	initscr();
 	if (has_colors())
@@ -42,4 +42,6 @@ void	init_display(void)
 	noecho();
 	keypad(stdscr, TRUE);
 	nodelay(stdscr, TRUE);
+	for (int i = 0; i < FILENAME_LEN; i++)
+		display->letter_filename[i] = FILENAME[i];
 }

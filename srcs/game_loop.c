@@ -15,15 +15,17 @@
 #include "wkw.h"
 
 void	process_line(t_board* ptr_board, int* line);
-void	get_line(t_board* ptr_board, int* line, int input, size_t index);
-void	set_line(t_board* ptr_board, int* line, int input, size_t index);
+void	get_line(t_board* ptr_board, int* line, int input, int index);
+void	set_line(t_board* ptr_board, int* line, int input, int index);
 int		add_tile(t_board* ptr_board);
 
 int	game_loop(t_board* ptr_board, int input)
 {
 	int	line[MAX_BOARD_SIZE];
 
-	for (size_t i = 0; i < ptr_board->size; ++i)
+	if (input == 0)
+		return (1);
+	for (int i = 0; i < ptr_board->size; ++i)
 	{
 		get_line(ptr_board, line, input, i);
 		process_line(ptr_board, line);
@@ -34,11 +36,11 @@ int	game_loop(t_board* ptr_board, int input)
 
 void	process_line(t_board* ptr_board, int* line)
 {
-	size_t	new_pos;
+	int	new_pos;
 	
-	for (size_t i = 0; i < ptr_board->size - 1; ++i)
+	for (int i = 0; i < ptr_board->size - 1; ++i)
 	{
-		for (size_t j = i + 1; j < ptr_board->size; ++j)
+		for (int j = i + 1; j < ptr_board->size; ++j)
 		{
 			if (line[i] != 0)
 			{
@@ -63,11 +65,11 @@ void	process_line(t_board* ptr_board, int* line)
 	}
 }
 
-void	get_line(t_board* ptr_board, int* line, int input, size_t index)
+void	get_line(t_board* ptr_board, int* line, int input, int index)
 {
-	size_t	row, col;
+	int	row, col;
 	
-	for (size_t i = 0; i < ptr_board->size; ++i)
+	for (int i = 0; i < ptr_board->size; ++i)
 	{
 		switch (input)
 		{
@@ -100,11 +102,11 @@ void	get_line(t_board* ptr_board, int* line, int input, size_t index)
 	}
 }
 
-void	set_line(t_board* ptr_board, int* line, int input, size_t index)
+void	set_line(t_board* ptr_board, int* line, int input, int index)
 {
-	size_t	row, col;
+	int	row, col;
 	
-	for (size_t i = 0; i < ptr_board->size; ++i)
+	for (int i = 0; i < ptr_board->size; ++i)
 	{
 		switch (input)
 		{

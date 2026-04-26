@@ -4,7 +4,7 @@
 # define TOO_SMALL_MSG "GAME WINDOW TOO SMALL"
 # define SCORE_MSG "SCORE: "
 # define BEST_SCORE_MSG "BEST SCORE: "
-# define MAX_SIZE 10
+# define MAX_BOARD_SIZE 10
 # define FILENAME "srcs/letters/letter_0.txt"
 # define FILENAME_LEN 25
 # define LETTER_FILENAME 20
@@ -17,14 +17,15 @@
 # define ENDGAME_WIDTH 59
 # define ENDGAME_HEIGHT 8
 # define ESCAPE_KEY 27
+# define DEFAULT_SIZE 4
 
 # include <stdbool.h>
 # include <ncurses.h>
 # include <string.h>
+# include <stddef.h>
 # include "colors.h"
 # include "get_next_line.h"
 
-# define MAX_BOARD_SIZE 10
 
 enum	e_const
 {
@@ -48,33 +49,33 @@ enum	e_error
 
 typedef struct	s_board
 {
-	size_t	tiles[MAX_BOARD_SIZE][MAX_BOARD_SIZE];
-	size_t	size;
-	size_t	nb_empty_tiles;
-	size_t	max_score;
-	size_t	player_score;
+	int	tiles[MAX_BOARD_SIZE][MAX_BOARD_SIZE];
+	int	size;
+	int	nb_empty_tiles;
+	int	max_score;
+	int	player_score;
 	bool	is_over;
 }	t_board;
 
 typedef struct	s_display
 {
-	int		board[MAX_SIZE][MAX_SIZE];
-	int		board_sz;
+	t_board	board;
 	int		width;
 	int		height;
 	int		start_row;
 	int		start_col;
-	int		player_score;
-	int		best_score;
+	int		state;
 	bool	ascii;
+	bool	quit;
 	char	letter_filename[FILENAME_LEN];
 }	t_display;
 
 
-void	init_display(void);
+void	init_display(t_display *display);
 void	handle_resize(void);
-void	change_board(t_display *display, int new_board[MAX_SIZE][MAX_SIZE]);
 void	display_board(t_display *display);
 void	resize_board(t_display *display);
+int		game_loop(t_board *board, int input);
+int		game_init(t_board *board, int size);
 
 #endif

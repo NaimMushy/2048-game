@@ -16,7 +16,7 @@
 int	add_tile(t_board* ptr_board)
 {
 	int		new_tile;
-    size_t	tile_pos, i, j;
+    int	tile_pos, i, j;
  
 	if (rand() % 5 == 4)
 		new_tile = 4;

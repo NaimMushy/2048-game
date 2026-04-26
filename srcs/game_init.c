@@ -11,16 +11,19 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <time.h>
 #include "wkw.h"
 
-int	game_init(t_board* ptr_board, size_t board_size)
+void	add_tile(t_board *board);
+
+int	game_init(t_board* ptr_board, int board_size)
 {
 	if (board_size > MAX_BOARD_SIZE)
 		return (ERROR_GAME);
 	ptr_board->size = board_size;
-	for (size_t i = 0; i < board_size; ++i)
+	for (int i = 0; i < board_size; ++i)
 	{
-		for (size_t j = 0; j < board_size; ++j)
+		for (int j = 0; j < board_size; ++j)
 		{
 			ptr_board->tiles[i][j] = 0;
 		}
@@ -30,5 +33,6 @@ int	game_init(t_board* ptr_board, size_t board_size)
 	srand(time(0));
 	add_tile(ptr_board);
 	add_tile(ptr_board);
+	ptr_board->is_over = false;
 	return (SUCCESS);
 }

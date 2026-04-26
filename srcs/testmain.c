@@ -1,24 +1,25 @@
 #include "wkw.h"
 
-/*
-int	test_main(void)
+void	game_handler(t_display *display);
+
+int	main(void)
 {
 	t_display	display = {0};
 	
-	init_display();
-	while (display->quit == false)
+	init_display(&display);
+	display.state = GAME;
+	display.quit = false;
+	game_init(&display.board, DEFAULT_SIZE);
+	while (display.quit == false)
 	{
-		if (display->state == MENU)
-			menu_handler(&display);
-		else if (display->state == GAME)
+		if (display.state == GAME)
 			game_handler(&display);
-		else if (display->state == CHOICE)
-			choice_handler(&display);
 	}
 	endwin();
 }
 
 
+/*
 void	menu_handler(t_display *display)
 {
 	int	input = 0;
@@ -37,33 +38,34 @@ void	menu_handler(t_display *display)
 	display->quit = true;
 	return ;
 }
-
+*/
 
 void	game_handler(t_display *display)
 {
 	int	input = 0;
 
+	resize_board(display);
 	while ((input = wgetch(stdscr)) != ESCAPE_KEY)
 	{
 		if (input == KEY_RESIZE)
 			resize_board(display);
-		else
+		else if (input == KEY_UP || input == KEY_DOWN || input == KEY_LEFT || input == KEY_RIGHT)
 		{
-			game_move = game_function(input);
-			if (game_move != 0)
-				display_board(display);
-			if (display->over)
+			game_loop(&display->board, input);
+			display_board(display);
+			if (display->board.is_over)
 			{
 				display->state = CHOICE;
 				return ;
 			}
 		}
 	}
-	display->state = MENU;
+	display->quit = true;
 	return ;
 }
 
 
+/*
 void	choice_handler(t_display *display)
 {
 	int	input = 0;
@@ -111,42 +113,3 @@ si game->over est a true, je regarde si le joueur a gagné ou perdu, et en fonct
 si oui, je mets game->over a false et je continue la boucle (si perdu, je remets le score a 0 et je créé un nouveau board)
 je mets le display-> state au menu et je return
 */
-
-int	main(void)
-{
-	int		input = 0;
-	t_display	game_display = {0};
-	int	board1[MAX_SIZE][MAX_SIZE] = {{2, 0, 4, 8}, {0, 0, 16, 8}, {16, 0, 32, 64}, {2, 2, 16, 4}};
-	int	board2[MAX_SIZE][MAX_SIZE] = {{2, 8, 4, 128}, {2, 0, 16, 2}, {16, 0, 0, 64}, {2, 64, 16, 4}};
-	int cur_board = 2;
-
-	init_display();
-	game_display.player_score = 0;
-	game_display.best_score = 4096;
-	game_display.board_sz = 4;
-	change_board(&game_display, board1);
-	for (int i = 0; i < FILENAME_LEN; i++)
-		game_display.letter_filename[i] = FILENAME[i];
-	resize_board(&game_display);
-	while ((input = wgetch(stdscr)) != 27)
-	{
-		if (input == KEY_RESIZE)
-			resize_board(&game_display);
-		else if (input == 110)
-		{
-			if (cur_board == 1)
-			{
-				change_board(&game_display, board1);
-				cur_board = 2;
-			}
-			else
-			{
-				change_board(&game_display, board2);
-				cur_board = 1;
-			}
-			display_board(&game_display);
-		}
-	}
-	endwin();
-	return (1);
-}

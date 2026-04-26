@@ -34,12 +34,12 @@ int	get_max_nb(t_display *display)
 {
 	int	max_nb = 0;
 
-	for (int row = 0; row < display->board_sz; row++)
+	for (int row = 0; row < display->board.size; row++)
 	{
-		for (int col = 0; col < display->board_sz; col++)
+		for (int col = 0; col < display->board.size; col++)
 		{
-			if (display->board[row][col] > max_nb)
-				max_nb = display->board[row][col];
+			if (display->board.tiles[row][col] > max_nb)
+				max_nb = display->board.tiles[row][col];
 		}
 	}
 	return (max_nb);
@@ -105,12 +105,12 @@ void	resize_board(t_display *display)
 	int	min_sz = 2 + intlen(get_max_nb(display));
 
 	handle_resize();
-	display->width = (COLS - offset) / (display->board_sz * 2);
-	display->height = (LINES  - offset) / display->board_sz;
+	display->width = (COLS - offset) / (display->board.size * 2);
+	display->height = (LINES  - offset) / display->board.size;
 	while (offset-- > 0 && display->width < min_sz && display->height < min_sz)
 	{
-		display->width = (COLS - offset) / (display->board_sz * 2);
-		display->height = (LINES  - offset) / display->board_sz;
+		display->width = (COLS - offset) / (display->board.size * 2);
+		display->height = (LINES  - offset) / display->board.size;
 	}
 	if (display->width < min_sz || display->height < min_sz)
 	{
@@ -120,8 +120,8 @@ void	resize_board(t_display *display)
 	if (display->width <= display->height)
 		display->height = display->width;
 	display->width = display->height * 2;
-	display->start_row = (LINES - (display->height * display->board_sz)) / 2;
-	display->start_col = (COLS - (display->width * display->board_sz)) / 2;
+	display->start_row = (LINES - (display->height * display->board.size)) / 2;
+	display->start_col = (COLS - (display->width * display->board.size)) / 2;
 	display_board(display);
 }
 
@@ -130,11 +130,11 @@ void	display_scores(t_display *display)
 {
 	int	msg_length, score_len, score, power, digit, pos;
 
-	if (LINES <= display->height * display->board_sz + 1)
+	if (LINES <= display->height * display->board.size + 1)
 		return ;
-	score = display->player_score;
+	score = display->board.player_score;
 	score_len = intlen(score);
-	msg_length = strlen(SCORE_MSG) + score_len + 3 + strlen(BEST_SCORE_MSG) + intlen(display->best_score);
+	msg_length = strlen(SCORE_MSG) + score_len + 3 + strlen(BEST_SCORE_MSG) + intlen(display->board.max_score);
 	if (COLS < msg_length)
 		return ;
 	pos = (COLS - msg_length) / 2;
@@ -152,8 +152,8 @@ void	display_scores(t_display *display)
 	pos = pos + 3;
 	mvwaddstr(stdscr, 1, pos, BEST_SCORE_MSG);
 	pos = pos + strlen(BEST_SCORE_MSG);
-	score = display->best_score;
-	score_len = intlen(display->best_score);
+	score = display->board.max_score;
+	score_len = intlen(display->board.max_score);
 	while (score_len)
 	{
 		power = ft_pow(10, score_len);
@@ -196,7 +196,7 @@ void	print_ascii_number(int row, int col, t_display *display, int number)
 void	print_single_number(int row, int col, t_display *display)
 {
 	int 	nb_row, nb_col, digit;
-	int		number = display->board[row][col];
+	int		number = display->board.tiles[row][col];
 	int		len = intlen(number);
 
 	nb_row = display->start_row + (row * display->height) + 1;
@@ -220,7 +220,7 @@ void	print_single_number(int row, int col, t_display *display)
 			nb_col = nb_col + LETTER_WIDTH;
 		}
 		else
-			print_char_with_color(nb_row, nb_col, (char)digit + '0', START_COLOR + (get_multiple(2, display->board[row][col]) % NB_COLORS));
+			print_char_with_color(nb_row, nb_col, (char)digit + '0', START_COLOR + (get_multiple(2, display->board.tiles[row][col]) % NB_COLORS));
 		nb_col++;
 		number = number - (digit * ft_pow(10, len));
 		len--;
@@ -233,12 +233,12 @@ void	display_numbers(t_display *display)
 	int row, col;
 
 	row = -1;
-	while (++row < display->board_sz)
+	while (++row < display->board.size)
 	{
 		col = -1;
-		while (++col < display->board_sz)
+		while (++col < display->board.size)
 		{
-			if (display->board[row][col] > 0)
+			if (display->board.tiles[row][col] > 0)
 				print_single_number(row, col, display);
 		}
 	}
@@ -252,17 +252,17 @@ void	display_board(t_display *display)
 	clear();
 	choose_letter_type(display);
 	row = -1;
-	while (++row <= display->board_sz)
+	while (++row <= display->board.size)
 	{
 		cur_row = display->start_row + (row * display->height);
 		col = -1;
-		while (++col <= display->board_sz)
+		while (++col <= display->board.size)
 		{
 			cur_col = display->start_col + (col * display->width);
-			print_corner(row, col, cur_row, cur_col, display->board_sz);
-			if (col < display->board_sz)
+			print_corner(row, col, cur_row, cur_col, display->board.size);
+			if (col < display->board.size)
 				mvwhline(stdscr, cur_row, cur_col + 1, ACS_HLINE, display->width - 1);
-			if (row < display->board_sz)
+			if (row < display->board.size)
 				mvwvline(stdscr, cur_row + 1, cur_col, ACS_VLINE, display->height - 1);
 		}
 	}
@@ -278,13 +278,3 @@ void	display_board(t_display *display)
 // 	mvwaddstr(win, x, y, (const char *)str);
 // 	wattroff(win, attrs);
 // }
-
-
-void	change_board(t_display *display, int new_board[MAX_SIZE][MAX_SIZE])
-{
-	for (int i = 0; i < display->board_sz; i++)
-	{
-		for (int j = 0; j < display->board_sz; j++)
-			display->board[i][j] = new_board[i][j];
-	}
-}
