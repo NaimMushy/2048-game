@@ -16,6 +16,57 @@
 
 void	add_tile(t_board *board);
 
+int	read_score(void)
+{
+	int		fd = open(SCORE_FILENAME, O_RDONDLY);
+	int		ret = 1;
+	int		score = 0;
+	char	buf;
+
+	if (fd < 0)
+		return (0);
+	if (fd <= 2)
+	{
+		close(fd);
+		return (0);
+	}
+	while (ret > 0)
+	{
+		ret = read(fd, buf, 1);
+		if (buf < '0' || buf > '9')
+			return (0);
+		score = score * 10 + (buf - '0');
+	}
+	close(fd);
+	if (ret < 0)
+		return (0);
+	return (score);
+}
+
+void	save_score(int score)
+{
+	int	len = intlen(score);
+	int	digit, power;
+	int fd = open(SCORE_FILENAME, O_WRONLY | O_TRUNC | O_CREAT);
+
+	if (fd < 0)
+		return (0);
+	if (fd <= 2)
+	{
+		close(fd);
+		return (0);
+	}
+	while (len)
+	{
+		power = ft_pow(10, len);
+		digit = score / power;
+		write(fd, (char)digit + '0', 1);
+		score = score - (digit * power);
+		len--;
+	}
+	close(fd);
+}
+
 int	game_init(t_board* ptr_board, int board_size)
 {
 	if (board_size > MAX_BOARD_SIZE)
@@ -33,6 +84,8 @@ int	game_init(t_board* ptr_board, int board_size)
 	srand(time(0));
 	add_tile(ptr_board);
 	add_tile(ptr_board);
-	ptr_board->is_over = false;
+	ptr_board->game_status = RUNNING;
+	ptr_board->player_score = 0;
+	ptr_board->max_score = read_score();
 	return (SUCCESS);
 }

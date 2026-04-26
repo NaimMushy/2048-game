@@ -1,44 +1,70 @@
 #include "wkw.h"
 
 void	game_handler(t_display *display);
+void	menu_handler(t_display *display);
 
 int	main(void)
 {
 	t_display	display = {0};
 	
 	init_display(&display);
-	display.state = GAME;
-	display.quit = false;
-	game_init(&display.board, DEFAULT_SIZE);
 	while (display.quit == false)
 	{
-		if (display.state == GAME)
+		if (display.state == MENU)
+			menu_handler(&display);
+		else if (display.state == GAME)
 			game_handler(&display);
+		else if (display.state == ENDGAME)
+			endgame_handler(&display);
 	}
+	save_score(display.board.max_score);
 	endwin();
 }
 
 
-/*
 void	menu_handler(t_display *display)
 {
 	int	input = 0;
 
+	resize_menu(display);
 	while ((input = wgetch(stdscr)) != ESCAPE_KEY)
 	{
 		if (input == KEY_RESIZE)
 			resize_menu(display);
-		else if (input == KEY_DOWN || input == KEY_UP)
-			// modifier parametre pointé
-		else if (input == SPACE)
-			// regarder paramètre pointé
-			// si c'est quitter, mettre le display->quit a true
-			// si c'est play, mettre le display->state à GAME et reutrn
+		else if (input == KEY_DOWN)
+		{
+			if (display->option_selected == PLAY_OPTION)
+			{
+				display->option_selected = QUIT_OPTION;
+				display_menu(display);
+			}
+		}
+		else if (input == KEY_UP)
+		{
+			if (display->option_selected == QUIT_OPTION)
+			{
+				display->option_selected = PLAY_OPTION;
+				display_menu(display);
+			}
+		}
+		else if (input == ENTER_KEY)
+		{
+			if (display->option_selected == PLAY_OPTION)
+			{
+				display->state = GAME;
+				game_init(&display->board, display->board.size);
+				return ;
+			}
+			else if (display->option_selected == QUIT_OPTION)
+			{
+				display->quit = true;
+				return ;
+			}
+		}
 	}
 	display->quit = true;
 	return ;
 }
-*/
 
 void	game_handler(t_display *display)
 {
@@ -53,20 +79,20 @@ void	game_handler(t_display *display)
 		{
 			game_loop(&display->board, input);
 			display_board(display);
-			if (display->board.is_over)
+			if (display->board.game_status != RUNNING && display->board.game_status != ENDLESS)
 			{
-				display->state = CHOICE;
+				display->state = ENDGAME;
+				display->option_selected = STARTOVER_OPTION;
 				return ;
 			}
 		}
 	}
-	display->quit = true;
+	display->state = MENU;
 	return ;
 }
 
 
-/*
-void	choice_handler(t_display *display)
+void	endgame_handler(t_display *display)
 {
 	int	input = 0;
 
@@ -74,15 +100,58 @@ void	choice_handler(t_display *display)
 	{
 		if (input == KEY_RESIZE)
 			resize_choice(display);
-		else if (input == KEY_UP || input == KEY_DOWN)
-			// modifie le parametre pointé
-		else if (input == ENTER)
+		else if (input == KEY_UP)
 		{
-			// regarde le paramètre pointé
-			// si c'est oui, mettre le display state a game
-			// sinon mettre le display a menu
-			// modifier les paramètres du jeu en fonction resultat: si perdu, mettre a zero et creer un nouveau board
-			// return
+			if (display->option_selected == QUITGAME_OPTION)
+			{
+				if (display->board.game_status == WIN)
+					display->option_selected = CONTINUE_OPTION;
+				else
+					display->option_selected = STARTOVER_OPTION;
+				display_endgame(display);
+			}
+			else if (display->option_selected == CONTINUE_OPTION)
+			{
+				display->option_selected = STARTOVER_OPTION;
+				display_endgame(display);
+			}
+		}
+		else if (input == KEY_DOWN)
+		{
+			if (display->option_selected == STARTOVER_OPTION)
+			{
+				if (display->board.game_status == WIN)
+					display->option_selected = CONTINUE_OPTION;
+				else
+					display->option_selected = QUITGAME_OPTION;
+				display_endgame(display);
+			}
+			else if (display->option_selected == CONTINUE_OPTION)
+			{
+				display->option_selected = QUITGAME_OPTION;
+				display_endgame(display);
+			}
+		}
+		else if (input == ENTER_KEY)
+		{
+			if (display->option_selected == STARTOVER_OPTION)
+			{
+				game_init(&display->board, display->board.size);
+				display->state = GAME;
+				return ;
+			}
+			if (display->option_selected == CONTINUE_OPTION)
+			{
+				display->board.game_status = ENDLESS;
+				display->state = GAME;
+				return ;
+			}
+			if (display->option_selected == QUITGAME_OPTION)
+			{
+				display->state = MENU;
+				display->option_selected = PLAY_OPTION;
+				return ;
+			}
 		}
 	}
 	display->state = MENU;

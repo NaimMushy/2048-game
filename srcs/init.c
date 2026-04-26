@@ -44,4 +44,7 @@ void	init_display(t_display *display)
 	nodelay(stdscr, TRUE);
 	for (int i = 0; i < FILENAME_LEN; i++)
 		display->letter_filename[i] = FILENAME[i];
+	display->state = MENU;
+	display->option_selected = PLAY_OPTION;
+	display->quit = false;
 }

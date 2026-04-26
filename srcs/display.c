@@ -1,6 +1,15 @@
 #include "wkw.h"
 
-void	display_board(t_display *display);
+void	print_score(int score, int row, int col);
+
+
+void	ft_mvwaddstr(WINDOW *win, int x, int y, char *str, int attrs)
+{
+	wattron(win, attrs);
+	mvwaddstr(win, x, y, (const char *)str);
+	wattroff(win, attrs);
+}
+
 
 void	handle_resize(void)
 {
@@ -99,6 +108,175 @@ void	print_corner(int row, int col, int cur_row, int cur_col, int board_sz)
 	}
 }
 
+
+void	resize_endgame(t_display *display)
+{
+	int	msg_length = strlen(SCORE_MSG) + intlen(display->board.player_score);
+
+	handle_resize();
+	display->height = 7;
+	display->width = 13;
+	if (display->board.game_status == WIN)
+	{
+		display->height += 2;
+		display->width += 3;
+	}
+	display->endgame_ascii_banner = false;
+	if (LINES < display->height || COLS < display->width)
+	{
+		mvwaddstr(stdscr, (LINES - 1) / 2, (COLS - strlen(TOO_SMALL_MSG)) / 2, TOO_SMALL_MSG);
+		return ;
+	}
+	if (LINES >= display->height + 2 && COLS >= display->width + (msg_length - display->width))
+	{
+		display->endgame_score = true;
+		display->height += 2;
+		display->width += msg_length - display->width;
+	}
+	if (LINES >= display->height + ENDGAME_HEIGHT -1 && COLS >= display->width + (ENDGAME_WIDTH) - display->width)
+	{
+		display->endgame_ascii_banner = true;
+		display->height += ENDGAME_HEIGHT - 1;
+		display->width += ENDGAME_WIDTH - display->width;
+	}
+	display->start_row = (LINES - display->height) / 2;
+	display->start_col = (COLS - display->width) / 2;
+	display_endgame(display);
+}
+
+
+void	display_endgame(t_display *display)
+{
+	int	row, col, msg_length;
+
+	row = display->start_row;
+	if (display->endgame_ascii_banner)
+	{
+		print_ascii_art(row, display->start_col, ENGAME_FILENAME, ENDGAME_WIDTH);
+		row += ENDGAME_HEIGHT;
+	}
+	else
+	{
+		col = display->start_col + (display->width - strlen(ENDGAME_MSG)) / 2;
+		mvwaddstr(stdscr, row, col, ENDGAME_MSG);
+		row += 2;
+	}
+	if (display->endgame_score)
+	{
+		msg_length = strlen(SCORE_MSG) + intlen(display->board.player_score);
+		col = display->start_col + (display->width - msg_length) / 2;
+		mvwaddstr(stdscr, row, col, SCORE_MSG);
+		col += strlen(SCORE_MSG);
+		print_score(display->board.player_score, row, col);
+		row += 2;
+	}
+	col = display->start_col + (display->width - strlen(STARTOVER_MSG)) / 2;
+	if (display->option_selected == STARTOVER_OPTION)
+		ft_mvwaddstr(stdscr, row, col, STARTOVER_MSG, A_UNDERLINE);
+	else
+		mvwaddstr(stdscr, row, col, STARTOVER_MSG);
+	row += 2;
+	if (display->board.game_status == WIN)
+	{
+		col = display->start_col + (display->width - strlen(CONTINUE_MSG)) / 2;
+		if (display->option_selected == CONTINUE_OPTION)
+			ft_mvwaddstr(stdscr, row, col, CONTINUE_MSG, A_UNDERLINE);
+		else
+			mvwaddstr(stdscr, row, col, CONTINUE_MSG);
+		row += 2;
+	}
+	col = display->start_col + (display->width - strlen(QUITGAME_MSG)) / 2;
+	if (display->option_selected == QUITGAME_OPTION)
+		ft_mvwaddstr(stdscr, row, col, QUITGAME_MSG, A_UNDERLINE);
+	else
+		mvwaddstr(stdscr, row, col, QUITGAME_MSG);
+}
+
+
+void	resize_menu(t_display *display)
+{
+	int	msg_length = (strlen(BEST_SCORE_MSG) + intlen(display->board.max_score));
+
+	handle_resize();
+	display->height = 3;
+	display->width = 7;
+	display->menu_score = false;
+	display->menu_ascii_banner = false;
+	if (LINES < display->height || COLS < display->width)
+	{
+		mvwaddstr(stdscr, (LINES - 1) / 2, (COLS - strlen(TOO_SMALL_MSG)) / 2, TOO_SMALL_MSG);
+		return ;
+	}
+	if (LINES >= display->height + 2 && COLS >= display->width + (msg_length - display->width))
+	{
+		display->menu_score = true;
+		display->height += 2;
+		display->width += msg_length - display->width;
+	}
+	if (LINES >= display->height + MENU_HEIGHT + 1 && COLS >= display->width + (MENU_WIDTH - display->width))
+	{
+		display->menu_ascii_banner = true;
+		display->height += MENU_HEIGHT + 1;
+		display->width += MENU_WIDTH - display_width;
+	}
+	display->start_row = (LINES - display->height) / 2;
+	display->start_col = (COLS - display->width) / 2;
+	display_menu(display);
+}
+
+
+void	print_ascii_art(int row, int col, char *filename, int line_len)
+{
+	int 	fd = open(filename, O_RDONLY);
+	char	*line;
+
+	if (fd < 0)
+		return ;
+	line = get_next_line(fd);
+	while (line)
+	{
+		mvwaddnstr(stdscr, row, col, line, line_len);
+		row++;
+		line = get_next_line(fd);
+	}
+	close(fd);
+}
+
+
+void	display_menu(t_display *display)
+{
+	int	row, col, msg_length;
+
+	clear();
+	row = display->start_row;
+	if (display->menu_ascii_banner)
+	{
+		print_ascii_art(row, display->start_col, MENU_FILENAME, MENU_WIDTH);
+		row += MENU_HEIGHT + 1;
+	}
+	if (display->menu_score)
+	{
+		msg_length = strlen(BEST_SCORE_MSG) + intlen(display->board.max_score);
+		col = display->start_col + (display->width - msg_length) / 2;
+		mvwaddstr(stdscr, row, col, BEST_SCORE_MSG);
+		col += strlen(BEST_SCORE_MSG);
+		print_score(display->board.max_score, row, col);
+		row += 2;
+	}
+	col = display->start_col + (display->width - strlen(PLAY_MSG)) / 2;
+	if (display->option_selected == PLAY_OPTION)
+		ft_mvwaddstr(stdscr, row, col, PLAY_MSG, A_UNDERLINE);
+	else
+		mvwaddstr(stdscr, row, col, PLAY_MSG);
+	row += 2;
+	col = display->start_col + (display->width - strlen(QUIT_MSG)) / 2;
+	if (display->option_selected == QUIT_OPTION)
+		ft_mvwaddstr(stdscr, row, col, QUIT_MSG, A_UNDERLINE);
+	else
+		mvwaddstr(stdscr, row, col, QUIT_MSG);
+}
+
+
 void	resize_board(t_display *display)
 {
 	int	offset = 5;
@@ -126,43 +304,40 @@ void	resize_board(t_display *display)
 }
 
 
+void	print_score(int score, int row, int col)
+{
+	int power, digit, score_len;
+
+	score_len = intlen(score);
+	while (score_len)
+	{
+		power = ft_pow(10, score_len);
+		digit = score / power;
+		mvwaddch(stdscr, row, col, (char)digit + '0');
+		col++;
+		score = score - (digit * power);
+		score_len--;
+	}
+}
+
+
 void	display_scores(t_display *display)
 {
-	int	msg_length, score_len, score, power, digit, pos;
+	int	msg_length, pos;
 
 	if (LINES <= display->height * display->board.size + 1)
 		return ;
-	score = display->board.player_score;
-	score_len = intlen(score);
-	msg_length = strlen(SCORE_MSG) + score_len + 3 + strlen(BEST_SCORE_MSG) + intlen(display->board.max_score);
+	msg_length = strlen(SCORE_MSG) + intlen(display->board.player_score) + 3 + strlen(BEST_SCORE_MSG) + intlen(display->board.max_score);
 	if (COLS < msg_length)
 		return ;
 	pos = (COLS - msg_length) / 2;
 	mvwaddstr(stdscr, 1, pos, SCORE_MSG);
 	pos = pos + strlen(SCORE_MSG);
-	while (score_len)
-	{
-		power = ft_pow(10, score_len);
-		digit = score / power;
-		mvwaddch(stdscr, 1, pos, (char)digit + '0');
-		pos++;
-		score = score - (digit * power);
-		score_len--;
-	}
+	print_score(display->board.player_score, 1, pos);
 	pos = pos + 3;
 	mvwaddstr(stdscr, 1, pos, BEST_SCORE_MSG);
 	pos = pos + strlen(BEST_SCORE_MSG);
-	score = display->board.max_score;
-	score_len = intlen(display->board.max_score);
-	while (score_len)
-	{
-		power = ft_pow(10, score_len);
-		digit = score / power;
-		mvwaddch(stdscr, 1, pos, (char)digit + '0');
-		pos++;
-		score = score - (digit * power);
-		score_len--;
-	}
+	print_score(display->board.max_score, 1, pos);
 }
 
 
@@ -269,12 +444,3 @@ void	display_board(t_display *display)
 	display_numbers(display);
 	display_scores(display);
 }
-
-
-
-// void	ft_mvaddstr(WINDOW *win, int x, int y, char *str, int attrs)
-// {
-// 	wattron(win, attrs);
-// 	mvwaddstr(win, x, y, (const char *)str);
-// 	wattroff(win, attrs);
-// }
