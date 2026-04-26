@@ -1,5 +1,10 @@
+#include <signal.h>
 #include "wkw.h"
+#include "game_mechs.h"
 
+bool	g_sig = false;
+
+static void		sigint_handler(int sig);
 enum e_error	game_handler(t_display *display);
 enum e_error	menu_handler(t_display *display);
 enum e_error	endgame_handler(t_display *display);
@@ -9,6 +14,7 @@ int	main(void)
 	t_display	display = {0};
 	int			ret = SUCCESS;
 	
+	signal(SIGINT, &sigint_handler);
 	init_display(&display);
 	while (display.quit == false)
 	{
@@ -174,4 +180,10 @@ enum e_error	endgame_handler(t_display *display)
 	}
 	display->state = MENU;
 	return (SUCCESS);
+}
+
+static void	sigint_handler(int sig)
+{
+	(void)sig;
+	g_sig = true;
 }

@@ -9,7 +9,7 @@
 # define ESCAPE_KEY 27
 # define ENTER_KEY 10
 
-// -------------------- STRUCTURES ------------------------//
+extern bool	g_sig;
 
 enum	e_const
 {
@@ -63,9 +63,7 @@ int				ft_pow(int to_pow, int power);
 
 void			save_score(int score);
 int				read_score(void);
-
-enum e_error	add_tile(t_board* ptr_board);
-enum e_error	game_loop(t_board *board, int input);
-enum e_error	game_init(t_board *board, int size);
+int				intlen(int number);
+int				ft_pow(int to_pow, int power);
 
 #endif

@@ -21,6 +21,7 @@ C_FILES = $(SCR_DIR)main.c \
 		  $(SCR_DIR)utils.c \
 		  $(SCR_DIR)get_next_line.c \
 		  $(SCR_DIR)game_loop.c \
+		  $(SCR_DIR)line_handling.c \
 		  $(SCR_DIR)tile_gen.c \
 		  $(SCR_DIR)init.c \
 		  $(SCR_DIR)best_score.c

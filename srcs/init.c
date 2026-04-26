@@ -1,4 +1,5 @@
 #include "wkw.h"
+#include "game_mechs.h"
 
 static int	set_win_value(void);
 static void	init_colors(void);
