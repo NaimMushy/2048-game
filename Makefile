@@ -14,7 +14,7 @@ OBJ_DIR = .build/
 
 #---------------- SOURCE FILES ----------------#
 
-C_FILES = $(SCR_DIR)testmain.c \
+C_FILES = $(SCR_DIR)main.c \
 		  $(SCR_DIR)display.c \
 		  $(SCR_DIR)get_next_line.c \
 		  $(SCR_DIR)game_init.c \

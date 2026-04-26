@@ -14,29 +14,25 @@
 #include <time.h>
 #include "wkw.h"
 
-void	add_tile(t_board *board);
-int		set_win_value(void);
+enum e_error	add_tile(t_board *board);
+int				set_win_value(void);
 
 int	read_score(void)
 {
-	int		fd = open(SCORE_FILENAME, O_RDONDLY);
+	int		fd = open(SCORE_FILENAME, O_RDONLY);
 	int		ret = 1;
 	int		score = 0;
 	char	buf;
 
-	if (fd < 0)
-		return (0);
 	if (fd <= 2)
-	{
-		close(fd);
 		return (0);
-	}
 	while (ret > 0)
 	{
-		ret = read(fd, buf, 1);
+		ret = read(fd, &buf, 1);
 		if (buf < '0' || buf > '9')
 			return (0);
-		score = score * 10 + (buf - '0');
+		if (ret > 0)
+			score = score * 10 + (buf - '0');
 	}
 	close(fd);
 	if (ret < 0)
@@ -48,27 +44,24 @@ void	save_score(int score)
 {
 	int	len = intlen(score);
 	int	digit, power;
-	int fd = open(SCORE_FILENAME, O_WRONLY | O_TRUNC | O_CREAT);
+	int fd = open(SCORE_FILENAME, O_WRONLY | O_TRUNC | O_CREAT, S_IRWXU);
+	char	buf;
 
-	if (fd < 0)
-		return (0);
 	if (fd <= 2)
-	{
-		close(fd);
-		return (0);
-	}
-	while (len)
+		return ;
+	while (len > 0)
 	{
 		power = ft_pow(10, len);
 		digit = score / power;
-		write(fd, (char)digit + '0', 1);
+		buf = digit + '0';
+		write(fd, &buf, 1);
 		score = score - (digit * power);
 		len--;
 	}
 	close(fd);
 }
 
-int	game_init(t_board* ptr_board, int board_size)
+enum e_error	game_init(t_board* ptr_board, int board_size)
 {
 	if (board_size > MAX_BOARD_SIZE)
 		return (ERROR_GAME);
@@ -81,14 +74,12 @@ int	game_init(t_board* ptr_board, int board_size)
 			ptr_board->tiles[i][j] = 0;
 		}
 	}
-	
 	ptr_board->nb_empty_tiles = board_size * board_size;
 	srand(time(0));
 	add_tile(ptr_board);
 	add_tile(ptr_board);
 	ptr_board->game_status = RUNNING;
 	ptr_board->player_score = 0;
-	ptr_board->max_score = read_score();
 	return (SUCCESS);
 }
 

@@ -1,6 +1,7 @@
 #include "wkw.h"
 
 void	print_score(int score, int row, int col);
+void	print_ascii_art(int row, int col, char *filename, int line_len);
 
 
 void	ft_mvwaddstr(WINDOW *win, int x, int y, char *str, int attrs)
@@ -152,7 +153,7 @@ void	display_endgame(t_display *display)
 	row = display->start_row;
 	if (display->endgame_ascii_banner)
 	{
-		print_ascii_art(row, display->start_col, ENGAME_FILENAME, ENDGAME_WIDTH);
+		print_ascii_art(row, display->start_col, ENDGAME_FILENAME, ENDGAME_WIDTH);
 		row += ENDGAME_HEIGHT;
 	}
 	else
@@ -217,7 +218,7 @@ void	resize_menu(t_display *display)
 	{
 		display->menu_ascii_banner = true;
 		display->height += MENU_HEIGHT + 1;
-		display->width += MENU_WIDTH - display_width;
+		display->width += MENU_WIDTH - display->width;
 	}
 	display->start_row = (LINES - display->height) / 2;
 	display->start_col = (COLS - display->width) / 2;

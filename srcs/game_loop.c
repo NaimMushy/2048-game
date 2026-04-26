@@ -26,9 +26,6 @@ enum e_error	game_loop(t_board* ptr_board, int input)
 	int		line[MAX_BOARD_SIZE];
 	bool	input_valid = false;
 
-	if (ptr_board->game_status == RUNNING)
-		check_win_status(ptr_board);
-	check_game_over(ptr_board);
 	for (int i = 0; i < ptr_board->size; ++i)
 	{
 		get_line(ptr_board, line, input, i);
@@ -40,6 +37,9 @@ enum e_error	game_loop(t_board* ptr_board, int input)
 	}
 	if (input_valid == true && add_tile(ptr_board) != SUCCESS)
 		return (ERROR_GAME);
+	if (ptr_board->game_status == RUNNING)
+		check_win_status(ptr_board);
+	check_game_over(ptr_board);
 	return (SUCCESS);
 }
 

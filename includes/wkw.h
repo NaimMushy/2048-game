@@ -107,10 +107,13 @@ void	display_menu(t_display *display);
 void	resize_menu(t_display *display);
 void	display_board(t_display *display);
 void	resize_board(t_display *display);
+void	display_endgame(t_display *display);
+void	resize_endgame(t_display *display);
 void	save_score(int score);
+int		read_score(void);
 int		intlen(int number);
 int		ft_pow(int to_pow, int power);
-int		game_loop(t_board *board, int input);
-int		game_init(t_board *board, int size);
+enum e_error		game_loop(t_board *board, int input);
+enum e_error		game_init(t_board *board, int size);
 
 #endif

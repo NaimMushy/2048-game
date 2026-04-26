@@ -46,5 +46,7 @@ void	init_display(t_display *display)
 		display->letter_filename[i] = FILENAME[i];
 	display->state = MENU;
 	display->option_selected = PLAY_OPTION;
+	display->board.size = DEFAULT_SIZE;
+	display->board.max_score = read_score();
 	display->quit = false;
 }
