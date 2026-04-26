@@ -6,7 +6,7 @@
 /*   By: cviel <cviel@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 15:15:43 by cviel             #+#    #+#             */
-/*   Updated: 2026/04/26 17:57:24 by cviel            ###   ########.fr       */
+/*   Updated: 2026/04/26 18:14:22 by cviel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 void	add_tile(t_board *board);
 int		set_win_value(void);
 
-int	game_init(t_board* ptr_board, int board_size)
+enum e_error	game_init(t_board* ptr_board, int board_size)
 {
 	if (board_size > MAX_BOARD_SIZE)
 		return (ERROR_GAME);

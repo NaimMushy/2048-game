@@ -56,13 +56,13 @@ enum e_game_status
 
 typedef struct	s_board
 {
-	int	tiles[MAX_BOARD_SIZE][MAX_BOARD_SIZE];
-	int	size;
-	int	nb_empty_tiles;
-	int	max_score;
-	int	player_score;
-	int	game_status;
-	int	win_value;
+	int					tiles[MAX_BOARD_SIZE][MAX_BOARD_SIZE];
+	int					size;
+	int					nb_empty_tiles;
+	int					max_score;
+	int					player_score;
+	int					game_status;
+	enum e_game_status	win_value;
 }	t_board;
 
 typedef struct	s_display
@@ -79,11 +79,11 @@ typedef struct	s_display
 }	t_display;
 
 
-void	init_display(t_display *display);
-void	handle_resize(void);
-void	display_board(t_display *display);
-void	resize_board(t_display *display);
-int		game_loop(t_board *board, int input);
-int		game_init(t_board *board, int size);
+void			init_display(t_display *display);
+void			handle_resize(void);
+void			display_board(t_display *display);
+void			resize_board(t_display *display);
+enum e_error	game_loop(t_board *board, int input);
+enum e_error	game_init(t_board *board, int size);
 
 #endif

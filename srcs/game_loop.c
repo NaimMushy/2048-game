@@ -6,7 +6,7 @@
 /*   By: cviel <cviel@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 16:49:57 by cviel             #+#    #+#             */
-/*   Updated: 2026/04/26 18:03:49 by cviel            ###   ########.fr       */
+/*   Updated: 2026/04/26 18:15:00 by cviel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 #include <stdlib.h>
 #include "wkw.h"
 
-bool	process_line(t_board* ptr_board, int* line);
-void	get_line(t_board* ptr_board, int* line, int input, int index);
-void	set_line(t_board* ptr_board, int* line, int input, int index);
-int		add_tile(t_board* ptr_board);
-void	check_win_status(t_board* ptr_board);
-void	check_game_over(t_board* ptr_board);
+bool			process_line(t_board* ptr_board, int* line);
+void			get_line(t_board* ptr_board, int* line, int input, int index);
+void			set_line(t_board* ptr_board, int* line, int input, int index);
+enum e_error	add_tile(t_board* ptr_board);
+void			check_win_status(t_board* ptr_board);
+void			check_game_over(t_board* ptr_board);
 
-int	game_loop(t_board* ptr_board, int input)
+enum e_error	game_loop(t_board* ptr_board, int input)
 {
 	int		line[MAX_BOARD_SIZE];
 	bool	input_valid = false;
