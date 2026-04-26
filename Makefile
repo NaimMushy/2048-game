@@ -1,6 +1,6 @@
 #---------------- VARIABLES ----------------#
 
-NAME=wong_kar_wai
+NAME=2048
 CC=cc
 CFLAGS=-Wall -Werror -Wextra -I $(INCLUDE_DIR)
 LDFLAGS=-lncurses
