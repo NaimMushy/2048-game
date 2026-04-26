@@ -4,6 +4,7 @@
 
 bool	g_sig = false;
 
+static void		sigint_handler(int sig);
 enum e_error	game_handler(t_display *display);
 enum e_error	menu_handler(t_display *display);
 enum e_error	endgame_handler(t_display *display);
@@ -181,7 +182,8 @@ enum e_error	endgame_handler(t_display *display)
 	return (SUCCESS);
 }
 
-static int	sigint_handler(int sig)
+static void	sigint_handler(int sig)
 {
+	(void)sig;
 	g_sig = true;
 }
