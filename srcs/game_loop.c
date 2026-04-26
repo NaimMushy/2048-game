@@ -10,16 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ncurses.h>
-#include <stdlib.h>
 #include "wkw.h"
 
-bool			process_line(t_board* ptr_board, int* line);
-void			get_line(t_board* ptr_board, int* line, int input, int index);
-void			set_line(t_board* ptr_board, int* line, int input, int index);
-enum e_error	add_tile(t_board* ptr_board);
-void			check_win_status(t_board* ptr_board);
-void			check_game_over(t_board* ptr_board);
+static bool			process_line(t_board* ptr_board, int* line);
+static void			get_line(t_board* ptr_board, int* line, int input, int index);
+static void			set_line(t_board* ptr_board, int* line, int input, int index);
+static void			check_win_status(t_board* ptr_board);
+static void			check_game_over(t_board* ptr_board);
 
 enum e_error	game_loop(t_board* ptr_board, int input)
 {
@@ -43,7 +40,7 @@ enum e_error	game_loop(t_board* ptr_board, int input)
 	return (SUCCESS);
 }
 
-bool	process_line(t_board* ptr_board, int* line)
+static bool	process_line(t_board* ptr_board, int* line)
 {
 	int		new_pos;
 	bool	change = false;
@@ -83,7 +80,7 @@ bool	process_line(t_board* ptr_board, int* line)
 	return (change);
 }
 
-void	get_line(t_board* ptr_board, int* line, int input, int index)
+static void	get_line(t_board* ptr_board, int* line, int input, int index)
 {
 	int	row, col;
 	
@@ -120,7 +117,7 @@ void	get_line(t_board* ptr_board, int* line, int input, int index)
 	}
 }
 
-void	set_line(t_board* ptr_board, int* line, int input, int index)
+static void	set_line(t_board* ptr_board, int* line, int input, int index)
 {
 	int	row, col;
 	
@@ -157,7 +154,7 @@ void	set_line(t_board* ptr_board, int* line, int input, int index)
 	}
 }
 
-void	check_win_status(t_board* ptr_board)
+static void	check_win_status(t_board* ptr_board)
 {
 	for (int i = 0; i < ptr_board->size; ++i)
 	{
@@ -169,7 +166,7 @@ void	check_win_status(t_board* ptr_board)
 	}
 }
 
-void	check_game_over(t_board* ptr_board)
+static void	check_game_over(t_board* ptr_board)
 {
 	if (ptr_board->nb_empty_tiles == 0)
 	{

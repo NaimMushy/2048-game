@@ -31,6 +31,9 @@
 # include <ncurses.h>
 # include <string.h>
 # include <stddef.h>
+# include <stdlib.h>
+# include <fcntl.h>
+# include <time.h>
 # include "colors.h"
 # include "get_next_line.h"
 
@@ -101,19 +104,20 @@ typedef struct	s_display
 }	t_display;
 
 
-void	init_display(t_display *display);
-void	handle_resize(void);
-void	display_menu(t_display *display);
-void	resize_menu(t_display *display);
-void	display_board(t_display *display);
-void	resize_board(t_display *display);
-void	display_endgame(t_display *display);
-void	resize_endgame(t_display *display);
-void	save_score(int score);
-int		read_score(void);
-int		intlen(int number);
-int		ft_pow(int to_pow, int power);
-enum e_error		game_loop(t_board *board, int input);
-enum e_error		game_init(t_board *board, int size);
+void			init_display(t_display *display);
+void			handle_resize(void);
+void			display_menu(t_display *display);
+void			resize_menu(t_display *display);
+void			display_board(t_display *display);
+void			resize_board(t_display *display);
+void			display_endgame(t_display *display);
+void			resize_endgame(t_display *display);
+void			save_score(int score);
+int				read_score(void);
+int				intlen(int number);
+int				ft_pow(int to_pow, int power);
+enum e_error	add_tile(t_board* ptr_board);
+enum e_error	game_loop(t_board *board, int input);
+enum e_error	game_init(t_board *board, int size);
 
 #endif

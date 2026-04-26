@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
 #include "wkw.h"
 
 enum e_error	add_tile(t_board* ptr_board)
