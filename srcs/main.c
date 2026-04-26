@@ -1,4 +1,5 @@
 #include "wkw.h"
+#include "game_mechs.h"
 
 enum e_error	game_handler(t_display *display);
 enum e_error	menu_handler(t_display *display);

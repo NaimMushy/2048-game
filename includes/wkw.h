@@ -116,8 +116,5 @@ void			save_score(int score);
 int				read_score(void);
 int				intlen(int number);
 int				ft_pow(int to_pow, int power);
-enum e_error	add_tile(t_board* ptr_board);
-enum e_error	game_loop(t_board *board, int input);
-enum e_error	game_init(t_board *board, int size);
 
 #endif
