@@ -46,6 +46,16 @@ int	get_max_nb(t_display *display)
 }
 
 
+int	get_multiple(int divide, int number)
+{
+	int	count = 0;
+
+	while ((number = number / divide) > 1)
+		count++;
+	return (count);
+}
+
+
 void	choose_letter_type(t_display *display)
 {
 	int	max_len = intlen(get_max_nb(display));
@@ -89,12 +99,12 @@ void	print_corner(int row, int col, int cur_row, int cur_col, int board_sz)
 	}
 }
 
-
-int	resize_window(t_display *display)
+void	resize_board(t_display *display)
 {
 	int	offset = 5;
 	int	min_sz = 2 + intlen(get_max_nb(display));
 
+	handle_resize();
 	display->width = (COLS - offset) / (display->board_sz * 2);
 	display->height = (LINES  - offset) / display->board_sz;
 	while (offset-- > 0 && display->width < min_sz && display->height < min_sz)
@@ -103,14 +113,16 @@ int	resize_window(t_display *display)
 		display->height = (LINES  - offset) / display->board_sz;
 	}
 	if (display->width < min_sz || display->height < min_sz)
-		return (0);
+	{
+		mvwaddstr(stdscr, (LINES - 1) / 2, (COLS - strlen(TOO_SMALL_MSG)) / 2, TOO_SMALL_MSG);
+		return ;
+	}
 	if (display->width <= display->height)
 		display->height = display->width;
 	display->width = display->height * 2;
 	display->start_row = (LINES - (display->height * display->board_sz)) / 2;
 	display->start_col = (COLS - (display->width * display->board_sz)) / 2;
 	display_board(display);
-	return (1);
 }
 
 
@@ -154,13 +166,11 @@ void	display_scores(t_display *display)
 }
 
 
-void	print_char_with_color(int row, int col, char character, int char_pos)
+void	print_char_with_color(int row, int col, char character, int color)
 {
-	int	color = 8 + char_pos;
-
-	wattron(stdscr, COLOR_PAIR(color));
+	wattron(stdscr, COLOR_PAIR(NB_COLORS + color));
 	mvwaddch(stdscr, row, col, character);
-	wattroff(stdscr, COLOR_PAIR(color));
+	wattroff(stdscr, COLOR_PAIR(NB_COLORS + color));
 }
 
 
@@ -175,7 +185,7 @@ void	print_ascii_number(int row, int col, t_display *display, int number)
 	while (line)
 	{
 		for (int char_index = 0; char_index < LETTER_WIDTH; char_index++)
-			print_char_with_color(row, col + char_index, line[char_index], char_index);
+			print_char_with_color(row, col + char_index, line[char_index], START_COLOR + char_index);
 		row++;
 		line = get_next_line(fd);
 	}
@@ -210,7 +220,7 @@ void	print_single_number(int row, int col, t_display *display)
 			nb_col = nb_col + LETTER_WIDTH;
 		}
 		else
-			print_char_with_color(nb_row, nb_col, (char)digit + '0', digit % 6);
+			print_char_with_color(nb_row, nb_col, (char)digit + '0', START_COLOR + (get_multiple(2, display->board[row][col]) % NB_COLORS));
 		nb_col++;
 		number = number - (digit * ft_pow(10, len));
 		len--;

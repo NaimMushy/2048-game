@@ -1,5 +1,6 @@
 #include "wkw.h"
 
+/*
 int	test_main(void)
 {
 	t_display	display = {0};
@@ -7,10 +8,12 @@ int	test_main(void)
 	init_display();
 	while (display->quit == false)
 	{
-		if (display_state == MENU)
+		if (display->state == MENU)
 			menu_handler(&display);
-		else if (display_state == GAME)
+		else if (display->state == GAME)
 			game_handler(&display);
+		else if (display->state == CHOICE)
+			choice_handler(&display);
 	}
 	endwin();
 }
@@ -20,21 +23,16 @@ void	menu_handler(t_display *display)
 {
 	int	input = 0;
 
-	while (!display_menu(display))
-		// print TOO_SMALL_MSG
 	while ((input = wgetch(stdscr)) != ESCAPE_KEY)
 	{
-		if (input == KEY_DOWN || input == KEY_UP)
+		if (input == KEY_RESIZE)
+			resize_menu(display);
+		else if (input == KEY_DOWN || input == KEY_UP)
 			// modifier parametre pointé
-		if (input == SPACE)
+		else if (input == SPACE)
 			// regarder paramètre pointé
 			// si c'est quitter, mettre le display->quit a true
 			// si c'est play, mettre le display->state à GAME et reutrn
-		if (input == KEY_RESIZE)
-		{
-			while (!display_menu(display))
-				// print TOO_SMALL_MSG
-		}
 	}
 	display->quit = true;
 	return ;
@@ -45,22 +43,20 @@ void	game_handler(t_display *display)
 {
 	int	input = 0;
 
-	while (!display_game(display))
-		// print TOO_SMALL_MSG
 	while ((input = wgetch(stdscr)) != ESCAPE_KEY)
 	{
 		if (input == KEY_RESIZE)
+			resize_board(display);
+		else
 		{
-			while (!display_game(display))
-				// print TOO_SMALL_MSG
-		}
-		game_move = game_function(input);
-		if (game_move != 0)
-			display_game(display);
-		if (game->over)
-		{
-			display->state = CHOICE;
-			return ;
+			game_move = game_function(input);
+			if (game_move != 0)
+				display_board(display);
+			if (display->over)
+			{
+				display->state = CHOICE;
+				return ;
+			}
 		}
 	}
 	display->state = MENU;
@@ -72,18 +68,13 @@ void	choice_handler(t_display *display)
 {
 	int	input = 0;
 
-	while (!display_choice(display))
-		// print TOO_SMALL_MSG
 	while ((input = wgetch(stdscr)) != ESCAPE_KEY)
 	{
 		if (input == KEY_RESIZE)
-		{
-			while (!display_choice(display))
-				// print TOO_SMALL_MSG
-		}
-		if (input == KEY_UP || input == KEY_DOWN)
+			resize_choice(display);
+		else if (input == KEY_UP || input == KEY_DOWN)
 			// modifie le parametre pointé
-		if (input == ENTER)
+		else if (input == ENTER)
 		{
 			// regarde le paramètre pointé
 			// si c'est oui, mettre le display state a game
@@ -97,7 +88,6 @@ void	choice_handler(t_display *display)
 }
 
 
-/*
 test main:
 
 display
@@ -122,7 +112,6 @@ si oui, je mets game->over a false et je continue la boucle (si perdu, je remets
 je mets le display-> state au menu et je return
 */
 
-
 int	main(void)
 {
 	int		input = 0;
@@ -138,17 +127,12 @@ int	main(void)
 	change_board(&game_display, board1);
 	for (int i = 0; i < FILENAME_LEN; i++)
 		game_display.letter_filename[i] = FILENAME[i];
-	while (!resize_window(&game_display))
-		mvwaddstr(stdscr, (LINES - 1) / 2, (COLS - strlen(TOO_SMALL_MSG)) / 2, TOO_SMALL_MSG);
+	resize_board(&game_display);
 	while ((input = wgetch(stdscr)) != 27)
 	{
 		if (input == KEY_RESIZE)
-		{
-			handle_resize();
-			if (!resize_window(&game_display))
-				mvwaddstr(stdscr, (LINES - 1) / 2, (COLS - strlen(TOO_SMALL_MSG)) / 2, TOO_SMALL_MSG);
-		}
-		if (input == 110)
+			resize_board(&game_display);
+		else if (input == 110)
 		{
 			if (cur_board == 1)
 			{
