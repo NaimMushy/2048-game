@@ -3,6 +3,7 @@
 
 static int	set_win_value(void);
 static void	init_colors(void);
+static void	init_banners(t_display *display);
 
 void	init_display(t_display *display)
 {
@@ -14,6 +15,17 @@ void	init_display(t_display *display)
 	noecho();
 	keypad(stdscr, TRUE);
 	nodelay(stdscr, TRUE);
+	init_banners(display);
+	display->state = MENU;
+	display->option_selected = PLAY_OPTION;
+	display->board.size = DEFAULT_SIZE;
+	display->board.max_score = read_score();
+	display->quit = false;
+}
+
+
+static void	init_banners(t_display *display)
+{
 	display->letter.filename = LETTER_FILENAME;
 	display->letter.width = LETTER_WIDTH;
 	display->letter.height = LETTER_HEIGHT;
@@ -23,12 +35,11 @@ void	init_display(t_display *display)
 	display->endgame.filename = ENDGAME_FILENAME;
 	display->endgame.width = ENDGAME_WIDTH;
 	display->endgame.height = ENDGAME_HEIGHT;
-	display->state = MENU;
-	display->option_selected = PLAY_OPTION;
-	display->board.size = DEFAULT_SIZE;
-	display->board.max_score = read_score();
-	display->quit = false;
+	display->size_choice.filename = SIZE_CHOICE_FILENAME;
+	display->size_choice.width = SIZE_CHOICE_WIDTH;
+	display->size_choice.height = SIZE_CHOICE_HEIGHT;
 }
+
 
 static void	init_colors(void)
 {
@@ -63,7 +74,6 @@ enum e_error	game_init(t_board* ptr_board)
 	if (ptr_board->size > MAX_BOARD_SIZE)
 		return (ERROR_GAME);
 	ptr_board->win_value = set_win_value();
-	ptr_board->size = ptr_board->size;
 	for (int i = 0; i < ptr_board->size; ++i)
 	{
 		for (int j = 0; j < ptr_board->size; ++j)

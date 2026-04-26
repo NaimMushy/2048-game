@@ -53,13 +53,49 @@ void	display_endgame(t_display *display)
 	refresh();
 }
 
-/*
+
 void	display_size_choice(t_display *display)
 {
+	int	row, col, nb_len, nb, digit;
 
+	clear();
+	row = display->start_row;
+	if (display->size_choice.ascii)
+	{
+		print_ascii_art(row, display->start_col, display->size_choice.filename, display->size_choice.width);
+		row += display->size_choice.height;
+	}
+	else
+	{
+		col = display->start_col + (display->width - ft_strlen(SIZE_CHOICE_MSG)) / 2;
+		mvwaddstr(stdscr, row, col, SIZE_CHOICE_MSG);
+	}
+	row += 1 + display->size_choice.offset;
+	for (int size = DEFAULT_SIZE; size <= MAX_BOARD_SIZE; size++)
+	{
+		if (size == display->option_selected)
+			wattron(stdscr, A_UNDERLINE);
+		nb = size;
+		nb_len = intlen(nb);
+		col = (COLS - 6 - nb_len) / 2;
+		mvwaddnstr(stdscr, row, col, "> ", 2);
+		col += 2;
+		while (nb_len)
+		{
+			digit = nb / ft_pow(10, nb_len);
+			mvwaddch(stdscr, row, col, (char)digit + '0');
+			col++;
+			mvwaddch(stdscr, row, col + intlen(size) + 2, (char)digit + '0');
+			nb = nb - (digit * ft_pow(10, nb_len));
+			nb_len--;
+		}
+		mvwaddnstr(stdscr, row, col, " x ", 3);
+		row += 1 + (display->size_choice.offset);
+		if (size == display->option_selected)
+			wattroff(stdscr, A_UNDERLINE);
+	}
+	refresh();
 }
-*/
-
 
 void	display_menu(t_display *display)
 {
@@ -109,7 +145,7 @@ static void	display_scores(t_display *display)
 	mvwaddstr(stdscr, 1, pos, SCORE_MSG);
 	pos = pos + ft_strlen(SCORE_MSG);
 	print_score(display->board.player_score, 1, pos);
-	pos = pos + 3;
+	pos = pos + intlen(display->board.player_score) + 3;
 	mvwaddstr(stdscr, 1, pos, BEST_SCORE_MSG);
 	pos = pos + ft_strlen(BEST_SCORE_MSG);
 	print_score(display->board.max_score, 1, pos);
@@ -139,6 +175,8 @@ void	display_board(t_display *display)
 
 	clear();
 	choose_letter_type(display);
+	display_numbers(display);
+	display_scores(display);
 	row = -1;
 	while (++row <= display->board.size)
 	{
@@ -154,7 +192,5 @@ void	display_board(t_display *display)
 				mvwvline(stdscr, cur_row + 1, cur_col, ACS_VLINE, display->height - 1);
 		}
 	}
-	display_numbers(display);
-	display_scores(display);
 	refresh();
 }

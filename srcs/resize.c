@@ -104,38 +104,30 @@ void	resize_endgame(t_display *display)
 	display_endgame(display);
 }
 
-/*
 void	resize_size_choice(t_display *display)
 {
+	int	nb_lines = 2 + MAX_BOARD_SIZE - DEFAULT_SIZE;
+
 	handle_resize();
-	display->height = 7;
-	display->width = 13;
-	if (display->board.game_status == WIN)
-	{
-		display->height += 2;
-		display->width += 3;
-	}
-	display->endgame.ascii = false;
-	display->endgame.score = false;
+	display->height = nb_lines;
+	display->width = ft_strlen(SIZE_CHOICE_MSG);
+	display->size_choice.offset = MAX_OFFSET + 1;
+	display->size_choice.ascii = false;
 	if (LINES < display->height || COLS < display->width)
 	{
 		mvwaddstr(stdscr, (LINES - 1) / 2, (COLS - ft_strlen(TOO_SMALL_MSG)) / 2, TOO_SMALL_MSG);
 		return ;
 	}
-	if (LINES >= display->height + 2 && COLS >= display->width + (msg_length - display->width))
+	if (LINES >= display->height + display->size_choice.height && COLS >= display->width + (display->size_choice.width + 3) - display->width)
 	{
-		display->endgame.score = true;
-		display->height += 2;
-		display->width += msg_length - display->width;
+		display->size_choice.ascii = true;
+		display->height += display->size_choice.height;
+		display->width += display->size_choice.width - display->width;
 	}
-	if (LINES >= display->height + display->endgame.height + 3 && COLS >= display->width + (display->endgame.width + 3) - display->width)
-	{
-		display->endgame.ascii = true;
-		display->height += display->endgame.height + 3;
-		display->width += display->endgame.width + 3 - display->width;
-	}
+	display->height += display->size_choice.offset * (nb_lines - 1);
+	while (--display->size_choice.offset > 0 && LINES < display->height)
+		display->height -= display->size_choice.offset * (nb_lines - 1);
 	display->start_row = (LINES - display->height) / 2;
 	display->start_col = (COLS - display->width) / 2;
-	display_endgame(display);
+	display_size_choice(display);
 }
-*/
