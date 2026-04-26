@@ -6,7 +6,7 @@
 /*   By: cviel <cviel@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 16:35:02 by cviel             #+#    #+#             */
-/*   Updated: 2026/04/25 18:13:13 by cviel            ###   ########.fr       */
+/*   Updated: 2026/04/26 16:46:38 by cviel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 
 int	add_tile(t_board* ptr_board)
 {
-	int		new_tile;
-    int	tile_pos, i, j;
+	int		new_tile, tile_pos, i, j;
  
 	if (rand() % 5 == 4)
 		new_tile = 4;
