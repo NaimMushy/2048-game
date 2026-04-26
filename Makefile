@@ -16,6 +16,8 @@ OBJ_DIR = .build/
 
 C_FILES = $(SCR_DIR)main.c \
 		  $(SCR_DIR)display.c \
+		  $(SCR_DIR)resize.c \
+		  $(SCR_DIR)utils.c \
 		  $(SCR_DIR)get_next_line.c \
 		  $(SCR_DIR)game_loop.c \
 		  $(SCR_DIR)tile_gen.c \
@@ -23,6 +25,7 @@ C_FILES = $(SCR_DIR)main.c \
 		  $(SCR_DIR)best_score.c
 
 HEADERS = $(INCLUDE_DIR)wkw.h \
+		  $(INCLUDE_DIR)display.h \
 		  $(INCLUDE_DIR)colors.h \
 		  $(INCLUDE_DIR)get_next_line.h
 

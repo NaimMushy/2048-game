@@ -13,12 +13,12 @@ void	init_display(t_display *display)
 	noecho();
 	keypad(stdscr, TRUE);
 	nodelay(stdscr, TRUE);
-	for (int i = 0; i < FILENAME_LEN; i++)
-		display->letter_filename[i] = FILENAME[i];
+	display->game.filename = LETTER_FILENAME;
 	display->state = MENU;
 	display->option_selected = PLAY_OPTION;
 	display->board.size = DEFAULT_SIZE;
 	display->board.max_score = read_score();
+
 	display->quit = false;
 }
 
