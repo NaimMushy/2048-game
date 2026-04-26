@@ -6,7 +6,7 @@
 /*   By: cviel <cviel@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 16:49:57 by cviel             #+#    #+#             */
-/*   Updated: 2026/04/26 17:47:34 by cviel            ###   ########.fr       */
+/*   Updated: 2026/04/26 18:03:49 by cviel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ int	game_loop(t_board* ptr_board, int input)
 	int		line[MAX_BOARD_SIZE];
 	bool	input_valid = false;
 
-	check_win_status(ptr_board);
+	if (ptr_board->game_status == RUNNING)
+		check_win_status(ptr_board);
 	check_game_over(ptr_board);
 	for (int i = 0; i < ptr_board->size; ++i)
 	{

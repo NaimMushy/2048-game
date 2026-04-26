@@ -53,7 +53,7 @@ void	game_handler(t_display *display)
 		{
 			game_loop(&display->board, input);
 			display_board(display);
-			if (display->board.game_status != RUNNING)
+			if (display->board.game_status != RUNNING && display->board.game_status != ENDLESS)
 			{
 				display->state = CHOICE;
 				return ;

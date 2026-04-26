@@ -29,7 +29,7 @@
 
 enum	e_const
 {
-	WIN_VALUE = 6
+	WIN_VALUE = 8
 };
 
 enum	e_states
@@ -50,7 +50,8 @@ enum e_game_status
 {
 	RUNNING = 0,
 	WIN = 1,
-	GAME_OVER = 2,
+	ENDLESS = 2,
+	GAME_OVER = 3,
 };
 
 typedef struct	s_board
