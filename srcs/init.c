@@ -27,7 +27,6 @@ void	init_display(t_display *display)
 	display->option_selected = PLAY_OPTION;
 	display->board.size = DEFAULT_SIZE;
 	display->board.max_score = read_score();
-
 	display->quit = false;
 }
 

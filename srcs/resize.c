@@ -8,6 +8,14 @@ void	handle_resize(void)
 	clear();
 }
 
+/*
+void	resize_choice_size(t_display *display)
+{
+	handle_resize();
+	display->width = 
+}
+*/
+
 
 void	resize_board(t_display *display)
 {

@@ -8,6 +8,7 @@ void	display_endgame(t_display *display)
 {
 	int	row, col, msg_length;
 
+	clear();
 	row = display->start_row;
 	if (display->endgame.ascii)
 	{
@@ -49,7 +50,15 @@ void	display_endgame(t_display *display)
 		ft_mvwaddstr(stdscr, row, col, QUITGAME_MSG, A_UNDERLINE);
 	else
 		mvwaddstr(stdscr, row, col, QUITGAME_MSG);
+	refresh();
 }
+
+/*
+void	display_size_choice(t_display *display)
+{
+
+}
+*/
 
 
 void	display_menu(t_display *display)
@@ -83,6 +92,7 @@ void	display_menu(t_display *display)
 		ft_mvwaddstr(stdscr, row, col, QUIT_MSG, A_UNDERLINE);
 	else
 		mvwaddstr(stdscr, row, col, QUIT_MSG);
+	refresh();
 }
 
 
@@ -146,4 +156,5 @@ void	display_board(t_display *display)
 	}
 	display_numbers(display);
 	display_scores(display);
+	refresh();
 }

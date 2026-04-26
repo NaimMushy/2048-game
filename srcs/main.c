@@ -16,7 +16,7 @@ int	main(void)
 	
 	signal(SIGINT, &sigint_handler);
 	init_display(&display);
-	while (display.quit == false)
+	while (display.quit == false && !g_sig)
 	{
 		if (display.state == MENU)
 		{
@@ -45,7 +45,7 @@ enum e_error	menu_handler(t_display *display)
 	int	input, ret;
 
 	resize_menu(display);
-	while ((input = wgetch(stdscr)) != ESCAPE_KEY)
+	while ((input = wgetch(stdscr)) != ESCAPE_KEY && !g_sig)
 	{
 		if (input == KEY_RESIZE)
 			resize_menu(display);
@@ -90,7 +90,7 @@ enum e_error	game_handler(t_display *display)
 	int	input, ret;
 
 	resize_board(display);
-	while ((input = wgetch(stdscr)) != ESCAPE_KEY)
+	while ((input = wgetch(stdscr)) != ESCAPE_KEY && !g_sig)
 	{
 		if (input == KEY_RESIZE)
 			resize_board(display);
@@ -119,7 +119,7 @@ enum e_error	endgame_handler(t_display *display)
 	int	input, ret;
 
 	resize_endgame(display);
-	while ((input = wgetch(stdscr)) != ESCAPE_KEY)
+	while ((input = wgetch(stdscr)) != ESCAPE_KEY && !g_sig)
 	{
 		if (input == KEY_RESIZE)
 			resize_endgame(display);
