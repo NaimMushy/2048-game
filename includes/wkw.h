@@ -58,12 +58,13 @@ extern bool	g_sig;
 
 // -------------------- FUNCTION PROTOTYPES ---------------------//
 
-int				intlen(int number);
-int				get_max_nb(t_display *display);
-int				get_multiple(int divide, int number);
-int				ft_pow(int to_pow, int power);
+int		intlen(int number);
+int		get_max_nb(t_display *display);
+int		get_multiple(int divide, int number);
+int		ft_pow(int to_pow, int power);
+int		ft_strlen(char const *s);
 
-void			save_score(int score);
-int				read_score(void);
+void	save_score(int score);
+int		read_score(void);
 
 #endif
