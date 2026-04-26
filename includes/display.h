@@ -12,17 +12,22 @@
 # define STARTOVER_MSG "> start over"
 # define CONTINUE_MSG "> continue game"
 # define QUITGAME_MSG "> quit game"
+# define SIZE_CHOICE_MSG "CHOOSE SIZE"
 # define LETTER_FILENAME "srcs/letters/letter_0.txt"
 # define LETTER_FILENAME_LEN 25
 # define LETTER_FILENAME_POS 20
 # define LETTER_WIDTH 6
 # define LETTER_HEIGHT 5
-# define MENU_FILENAME "srcs/ascii_banners/title1.txt"
-# define MENU_WIDTH 58
-# define MENU_HEIGHT 8
+# define MENU_FILENAME "srcs/ascii_banners/title2.txt"
+# define MENU_WIDTH 78
+# define MENU_HEIGHT 6
 # define ENDGAME_FILENAME "srcs/ascii_banners/end_game.txt"
 # define ENDGAME_WIDTH 59
 # define ENDGAME_HEIGHT 8
+# define SIZE_CHOICE_FILENAME "srcs/ascii_banners/size_choice.txt"
+# define SIZE_CHOICE_WIDTH 49
+# define SIZE_CHOICE_HEIGHT 6
+# define MAX_OFFSET 5
 
 // -------------------- INCLUDES ------------------------//
 
@@ -35,12 +40,13 @@ enum	e_states
 {
 	MENU,
 	GAME,
-	ENDGAME
+	ENDGAME,
+	SIZE_CHOICE
 };
 
 enum	e_options
 {
-	PLAY_OPTION,
+	PLAY_OPTION = MAX_BOARD_SIZE + 1,
 	QUIT_OPTION,
 	STARTOVER_OPTION,
 	CONTINUE_OPTION,
@@ -53,6 +59,7 @@ typedef struct	s_banner
 	bool	ascii;
 	int		width;
 	int		height;
+	int		offset;
 	char	*filename;
 }	t_banner;
 
@@ -69,6 +76,7 @@ typedef struct	s_display
 	t_banner	menu;
 	t_banner	endgame;
 	t_banner	letter;
+	t_banner	size_choice;
 }	t_display;
 
 
@@ -89,10 +97,12 @@ void	print_single_number(int row, int col, t_display *display);
 void	display_endgame(t_display *display);
 void	display_menu(t_display *display);
 void	display_board(t_display *display);
+void	display_size_choice(t_display *display);
 
 void	handle_resize(void);
 void	resize_board(t_display *display);
 void	resize_menu(t_display *display);
 void	resize_endgame(t_display *display);
+void	resize_size_choice(t_display *display);
 
 #endif

@@ -15,7 +15,7 @@
 
 # include "wkw.h"
 
-enum e_error	game_init(t_board *board, int size);
+enum e_error	game_init(t_board *board);
 enum e_error	add_tile(t_board* ptr_board);
 enum e_error	game_loop(t_board* ptr_board, int input);
 bool			process_line(t_board* ptr_board, int* line);

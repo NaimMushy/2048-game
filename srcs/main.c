@@ -5,9 +5,10 @@
 bool	g_sig = false;
 
 static void		sigint_handler(int sig);
-enum e_error	game_handler(t_display *display);
-enum e_error	menu_handler(t_display *display);
-enum e_error	endgame_handler(t_display *display);
+static enum e_error	game_handler(t_display *display);
+static enum e_error	menu_handler(t_display *display);
+static enum e_error	endgame_handler(t_display *display);
+static enum e_error	size_choice_handler(t_display *display);
 
 int	main(void)
 {
@@ -33,6 +34,11 @@ int	main(void)
 			if ((ret = endgame_handler(&display)) != SUCCESS)
 				break ;
 		}
+		else if (display.state == SIZE_CHOICE)
+		{
+			if ((ret = size_choice_handler(&display)) != SUCCESS)
+				break ;
+		}
 	}
 	save_score(display.board.max_score);
 	endwin();
@@ -40,7 +46,7 @@ int	main(void)
 }
 
 
-enum e_error	menu_handler(t_display *display)
+static enum e_error	menu_handler(t_display *display)
 {
 	int	input, ret;
 
@@ -49,29 +55,22 @@ enum e_error	menu_handler(t_display *display)
 	{
 		if (input == KEY_RESIZE)
 			resize_menu(display);
-		else if (input == KEY_DOWN)
+		else if (input == KEY_DOWN && display->option_selected != QUIT_OPTION)
 		{
-			if (display->option_selected == PLAY_OPTION)
-			{
-				display->option_selected = QUIT_OPTION;
-				display_menu(display);
-			}
+			display->option_selected++;
+			display_menu(display);
 		}
-		else if (input == KEY_UP)
+		else if (input == KEY_UP && display->option_selected != PLAY_OPTION)
 		{
-			if (display->option_selected == QUIT_OPTION)
-			{
-				display->option_selected = PLAY_OPTION;
-				display_menu(display);
-			}
+			display->option_selected--;
+			display_menu(display);
 		}
 		else if (input == ENTER_KEY)
 		{
 			if (display->option_selected == PLAY_OPTION)
 			{
-				display->state = GAME;
-				if ((ret = game_init(&display->board, display->board.size)) != SUCCESS)
-					return (ret);
+				display->state = SIZE_CHOICE;
+				display->option_selected = DEFAULT_SIZE;
 				return (SUCCESS);
 			}
 			else if (display->option_selected == QUIT_OPTION)
@@ -85,7 +84,7 @@ enum e_error	menu_handler(t_display *display)
 	return (SUCCESS);
 }
 
-enum e_error	game_handler(t_display *display)
+static enum e_error	game_handler(t_display *display)
 {
 	int	input, ret;
 
@@ -114,7 +113,7 @@ enum e_error	game_handler(t_display *display)
 }
 
 
-enum e_error	endgame_handler(t_display *display)
+static enum e_error	endgame_handler(t_display *display)
 {
 	int	input, ret;
 
@@ -123,43 +122,35 @@ enum e_error	endgame_handler(t_display *display)
 	{
 		if (input == KEY_RESIZE)
 			resize_endgame(display);
-		else if (input == KEY_UP)
+		else if (input == KEY_UP && display->option_selected != STARTOVER_OPTION)
 		{
 			if (display->option_selected == QUITGAME_OPTION)
 			{
-				if (display->board.game_status == WIN)
-					display->option_selected = CONTINUE_OPTION;
-				else
-					display->option_selected = STARTOVER_OPTION;
-				display_endgame(display);
+				display->option_selected--;
+				if (display->board.game_status != WIN)
+					display->option_selected--;
 			}
-			else if (display->option_selected == CONTINUE_OPTION)
-			{
-				display->option_selected = STARTOVER_OPTION;
-				display_endgame(display);
-			}
+			else
+				display->option_selected--;
+			display_endgame(display);
 		}
-		else if (input == KEY_DOWN)
+		else if (input == KEY_DOWN && display->option_selected != QUITGAME_OPTION)
 		{
 			if (display->option_selected == STARTOVER_OPTION)
 			{
-				if (display->board.game_status == WIN)
-					display->option_selected = CONTINUE_OPTION;
-				else
-					display->option_selected = QUITGAME_OPTION;
-				display_endgame(display);
+				display->option_selected++;
+				if (display->board.game_status != WIN)
+					display->option_selected++;
 			}
-			else if (display->option_selected == CONTINUE_OPTION)
-			{
-				display->option_selected = QUITGAME_OPTION;
-				display_endgame(display);
-			}
+			else
+				display->option_selected++;
+			display_endgame(display);
 		}
 		else if (input == ENTER_KEY)
 		{
 			if (display->option_selected == STARTOVER_OPTION)
 			{
-				if ((ret = game_init(&display->board, display->board.size)) != SUCCESS)
+				if ((ret = game_init(&display->board)) != SUCCESS)
 					return (ret);
 				display->state = GAME;
 				return (SUCCESS);
@@ -176,6 +167,39 @@ enum e_error	endgame_handler(t_display *display)
 				display->option_selected = PLAY_OPTION;
 				return (SUCCESS);
 			}
+		}
+	}
+	display->state = MENU;
+	return (SUCCESS);
+}
+
+
+static enum e_error	size_choice_handler(t_display *display)
+{
+	int	input, ret;
+
+	resize_size_choice(display);
+	while ((input = wgetch(stdscr)) != ESCAPE_KEY && !g_sig)
+	{
+		if (input == KEY_RESIZE)
+			resize_size_choice(display);
+		else if (input == KEY_UP && display->option_selected != DEFAULT_SIZE)
+		{
+			display->option_selected--;
+			display_size_choice(display);
+		}
+		else if (input == KEY_DOWN && display->option_selected != MAX_BOARD_SIZE)
+		{
+			display->option_selected++;
+			display_size_choice(display);
+		}
+		else if (input == ENTER_KEY)
+		{
+			display->board.size = display->option_selected;
+			if ((ret = game_init(&display->board)) != SUCCESS)
+				return (ret);
+			display->state = GAME;
+			return (SUCCESS);
 		}
 	}
 	display->state = MENU;
