@@ -2,7 +2,7 @@
 
 NAME=2048
 CC=cc
-CFLAGS=-Wall -Werror -Wextra -I $(INCLUDE_DIR)
+CFLAGS= -I $(INCLUDE_DIR)
 LDFLAGS=-lncurses
 DEPS=-MMD -MP
 
@@ -29,6 +29,7 @@ C_FILES = $(SCR_DIR)main.c \
 HEADERS = $(INCLUDE_DIR)wkw.h \
 		  $(INCLUDE_DIR)display.h \
 		  $(INCLUDE_DIR)colors.h \
+		  $(INCLUDE_DIR)game_mechs.h \
 		  $(INCLUDE_DIR)get_next_line.h
 
 #---------------- OBJECTS ----------------#

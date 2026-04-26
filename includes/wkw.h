@@ -9,7 +9,7 @@
 # define ESCAPE_KEY 27
 # define ENTER_KEY 10
 
-extern bool	g_sig;
+// -------------------- STRUCTURES ------------------------//
 
 enum	e_const
 {
@@ -54,6 +54,8 @@ typedef struct	s_board
 # include "display.h"
 # include "get_next_line.h"
 
+extern bool	g_sig;
+
 // -------------------- FUNCTION PROTOTYPES ---------------------//
 
 int				intlen(int number);
@@ -63,7 +65,5 @@ int				ft_pow(int to_pow, int power);
 
 void			save_score(int score);
 int				read_score(void);
-int				intlen(int number);
-int				ft_pow(int to_pow, int power);
 
 #endif

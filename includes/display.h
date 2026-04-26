@@ -13,6 +13,7 @@
 # define CONTINUE_MSG "> continue game"
 # define QUITGAME_MSG "> quit game"
 # define LETTER_FILENAME "srcs/letters/letter_0.txt"
+# define LETTER_FILENAME_LEN 25
 # define LETTER_FILENAME_POS 20
 # define LETTER_WIDTH 6
 # define LETTER_HEIGHT 5

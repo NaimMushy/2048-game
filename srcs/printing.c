@@ -36,7 +36,7 @@ void	print_corner(int row, int col, int cur_row, int cur_col, int board_sz)
 void	print_ascii_art(int row, int col, char *filename, int line_len)
 {
 	int 	fd = open(filename, O_RDONLY);
-	char	*line;
+	char	*line = NULL;
 
 	if (fd < 0)
 		return ;
@@ -45,8 +45,10 @@ void	print_ascii_art(int row, int col, char *filename, int line_len)
 	{
 		mvwaddnstr(stdscr, row, col, line, line_len);
 		row++;
+		free(line);
 		line = get_next_line(fd);
 	}
+	free(line);
 	close(fd);
 }
 
@@ -79,18 +81,24 @@ void	print_char_with_color(int row, int col, char character, int color)
 void	print_ascii_number(int row, int col, t_display *display, int number)
 {
 	int fd;
-	char *line;
+	char *line = NULL;
+	char letter_filename[LETTER_FILENAME_LEN + 1];
 
-	display->letter.filename[LETTER_FILENAME_POS] = (char)number + '0';
-	fd = open(display->letter.filename, O_RDONLY);
+	for (int i = 0; i < LETTER_FILENAME_LEN; i++)
+		letter_filename[i] = display->letter.filename[i];
+	letter_filename[LETTER_FILENAME_LEN] = '\0';
+	letter_filename[LETTER_FILENAME_POS] = (char)number + '0';
+	fd = open(letter_filename, O_RDONLY);
 	line = get_next_line(fd);
 	while (line)
 	{
 		for (int char_index = 0; char_index < display->letter.width; char_index++)
 			print_char_with_color(row, col + char_index, line[char_index], START_COLOR + char_index);
 		row++;
+		free(line);
 		line = get_next_line(fd);
 	}
+	free(line);
 	close(fd);
 }
 
