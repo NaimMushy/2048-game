@@ -6,7 +6,7 @@
 /*   By: cviel <cviel@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 16:49:57 by cviel             #+#    #+#             */
-/*   Updated: 2026/04/26 16:56:26 by cviel            ###   ########.fr       */
+/*   Updated: 2026/04/26 17:01:37 by cviel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,14 @@ int	game_loop(t_board* ptr_board, int input)
 	int		line[MAX_BOARD_SIZE];
 	bool	input_valid = false;
 
-	if (input == 0)
-		return (1);
 	for (int i = 0; i < ptr_board->size; ++i)
 	{
 		get_line(ptr_board, line, input, i);
 		if (process_line(ptr_board, line) == true)
 		{
 			input_valid = true;
+			set_line(ptr_board, line, input, i);
 		}
-		set_line(ptr_board, line, input, i);
 	}
 	if (input_valid == true)
 		return (add_tile(ptr_board));
@@ -47,29 +45,32 @@ bool	process_line(t_board* ptr_board, int* line)
 	
 	for (int i = 0; i < ptr_board->size; ++i)
 	{
-		for (int j = i + 1; j < ptr_board->size; ++j)
+		if (line[i] != 0)
 		{
-			if (line[i] != 0 && line[j] != 0)
+			for (int j = i + 1; j < ptr_board->size; ++j)
 			{
-				if (line[i] == line[j])
+				if (line[j] != 0)
 				{
-					line[i] <<= 1;
-					ptr_board->player_score += line[i];
-					line[j] = 0;
-					++ptr_board->nb_empty_tiles;
-					change = true;
+					if (line[i] == line[j])
+					{
+						line[i] <<= 1;
+						ptr_board->player_score += line[i];
+						line[j] = 0;
+						++ptr_board->nb_empty_tiles;
+						change = true;
+					}
+					break ;
 				}
-				break ;
 			}
-		}
-		new_pos = i;
-		while (new_pos > 0 && line[new_pos - 1] == 0)
-			--new_pos;
-		if (new_pos != i)
-		{
-			line[new_pos] = line[i];
-			line[i] = 0;
-			change = true;
+			new_pos = i;
+			while (new_pos > 0 && line[new_pos - 1] == 0)
+				--new_pos;
+			if (new_pos != i)
+			{
+				line[new_pos] = line[i];
+				line[i] = 0;
+				change = true;
+			}	
 		}
 	}
 	return (change);
