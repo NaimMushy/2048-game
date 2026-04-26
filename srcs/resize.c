@@ -104,7 +104,7 @@ void	resize_endgame(t_display *display)
 	display_endgame(display);
 }
 
-
+/*
 void	resize_size_choice(t_display *display)
 {
 	handle_resize();
@@ -138,3 +138,4 @@ void	resize_size_choice(t_display *display)
 	display->start_col = (COLS - display->width) / 2;
 	display_endgame(display);
 }
+*/
