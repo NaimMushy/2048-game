@@ -6,7 +6,7 @@
 /*   By: cviel <cviel@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/25 16:49:57 by cviel             #+#    #+#             */
-/*   Updated: 2026/04/25 19:27:52 by cviel            ###   ########.fr       */
+/*   Updated: 2026/04/26 18:15:00 by cviel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,55 +14,73 @@
 #include <stdlib.h>
 #include "wkw.h"
 
-void	process_line(t_board* ptr_board, int* line);
-void	get_line(t_board* ptr_board, int* line, int input, int index);
-void	set_line(t_board* ptr_board, int* line, int input, int index);
-int		add_tile(t_board* ptr_board);
+bool			process_line(t_board* ptr_board, int* line);
+void			get_line(t_board* ptr_board, int* line, int input, int index);
+void			set_line(t_board* ptr_board, int* line, int input, int index);
+enum e_error	add_tile(t_board* ptr_board);
+void			check_win_status(t_board* ptr_board);
+void			check_game_over(t_board* ptr_board);
 
-int	game_loop(t_board* ptr_board, int input)
+enum e_error	game_loop(t_board* ptr_board, int input)
 {
-	int	line[MAX_BOARD_SIZE];
+	int		line[MAX_BOARD_SIZE];
+	bool	input_valid = false;
 
-	if (input == 0)
-		return (1);
+	if (ptr_board->game_status == RUNNING)
+		check_win_status(ptr_board);
+	check_game_over(ptr_board);
 	for (int i = 0; i < ptr_board->size; ++i)
 	{
 		get_line(ptr_board, line, input, i);
-		process_line(ptr_board, line);
-		set_line(ptr_board, line, input, i);
+		if (process_line(ptr_board, line) == true)
+		{
+			input_valid = true;
+			set_line(ptr_board, line, input, i);
+		}
 	}
-	return (add_tile(ptr_board));
+	if (input_valid == true && add_tile(ptr_board) != SUCCESS)
+		return (ERROR_GAME);
+	return (SUCCESS);
 }
 
-void	process_line(t_board* ptr_board, int* line)
+bool	process_line(t_board* ptr_board, int* line)
 {
-	int	new_pos;
+	int		new_pos;
+	bool	change = false;
 	
-	for (int i = 0; i < ptr_board->size - 1; ++i)
+	for (int i = 0; i < ptr_board->size; ++i)
 	{
-		for (int j = i + 1; j < ptr_board->size; ++j)
+		if (line[i] != 0)
 		{
-			if (line[i] != 0)
+			for (int j = i + 1; j < ptr_board->size; ++j)
 			{
-				if (line[i] == line[j])
+				if (line[j] != 0)
 				{
-					line[i] <<= 1;
-					ptr_board->player_score += line[i];
-					line[j] = 0;
-					++ptr_board->nb_empty_tiles;
+					if (line[i] == line[j])
+					{
+						line[i] <<= 1;
+						ptr_board->player_score += line[i];
+						if (ptr_board->player_score > ptr_board->max_score)
+							ptr_board->max_score = ptr_board->player_score;
+						line[j] = 0;
+						++ptr_board->nb_empty_tiles;
+						change = true;
+					}
+					break ;
 				}
-				break ;
 			}
-		}
-		new_pos = i;
-		while (new_pos > 0 && line[new_pos - 1] != 0)
-			--new_pos;
-		if (new_pos != i)
-		{
-			line[new_pos] = line[i];
-			line[i] = 0;
+			new_pos = i;
+			while (new_pos > 0 && line[new_pos - 1] == 0)
+				--new_pos;
+			if (new_pos != i)
+			{
+				line[new_pos] = line[i];
+				line[i] = 0;
+				change = true;
+			}	
 		}
 	}
+	return (change);
 }
 
 void	get_line(t_board* ptr_board, int* line, int input, int index)
@@ -136,5 +154,35 @@ void	set_line(t_board* ptr_board, int* line, int input, int index)
 			}
 		}
 		ptr_board->tiles[row][col] = line[i];
+	}
+}
+
+void	check_win_status(t_board* ptr_board)
+{
+	for (int i = 0; i < ptr_board->size; ++i)
+	{
+		for (int j = 0; j < ptr_board->size; ++j)
+		{
+			if (ptr_board->tiles[i][j] == WIN_VALUE)
+				ptr_board->game_status = WIN;
+		}
+	}
+}
+
+void	check_game_over(t_board* ptr_board)
+{
+	if (ptr_board->nb_empty_tiles == 0)
+	{
+		for (int i = 0; i < ptr_board->size; ++i)
+		{
+			for (int j = 0; j < ptr_board->size; ++j)
+			{
+				if (i + 1 < ptr_board->size && ptr_board->tiles[i][j] == ptr_board->tiles[i + 1][j])
+					return ;
+				if (j + 1 < ptr_board->size && ptr_board->tiles[i][j] == ptr_board->tiles[i][j + 1])
+					return ;
+			}
+		}
+		ptr_board->game_status = GAME_OVER;
 	}
 }
