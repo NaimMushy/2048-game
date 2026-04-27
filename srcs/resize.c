@@ -126,7 +126,7 @@ void	resize_size_choice(t_display *display)
 	}
 	display->height += display->size_choice.offset * (nb_lines - 1);
 	while (--display->size_choice.offset > 0 && LINES < display->height)
-		display->height -= display->size_choice.offset * (nb_lines - 1);
+		display->height -= nb_lines - 1;
 	display->start_row = (LINES - display->height) / 2;
 	display->start_col = (COLS - display->width) / 2;
 	display_size_choice(display);
