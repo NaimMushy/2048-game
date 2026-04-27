@@ -56,10 +56,10 @@ void	resize_menu(t_display *display)
 		display->height += 2;
 		display->width += msg_length - display->width;
 	}
-	if (LINES >= display->height + display->menu.height + 1 && COLS >= display->width + (display->menu.width - display->width))
+	if (LINES >= display->height + display->menu.height + (display->height / 2) && COLS >= display->width + (display->menu.width - display->width))
 	{
 		display->menu.ascii = true;
-		display->height += display->menu.height + 1;
+		display->height += display->menu.height + (display->height / 2);
 		display->width += display->menu.width - display->width;
 	}
 	display->start_row = (LINES - display->height) / 2;

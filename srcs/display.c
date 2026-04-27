@@ -106,7 +106,7 @@ void	display_menu(t_display *display)
 	if (display->menu.ascii)
 	{
 		print_ascii_art(row, display->start_col, display->menu.filename, display->menu.width);
-		row += display->menu.height + 1;
+		row += display->menu.height + (display->height / 2);
 	}
 	if (display->menu.score)
 	{
